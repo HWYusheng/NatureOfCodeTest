@@ -9,14 +9,17 @@ namespace NatureOfCodeTest
 {
     internal class Mover
     {
-        private Vector2 position;
-        private Vector2 velocity;
-        private Vector2 acceleration;
-        public Mover(float x, float y)
+        public Vector2 position;
+        public Vector2 velocity;
+        public Vector2 acceleration;
+        public float mass;
+        public Mover()
         {
-            this.position = new Vector2(x, y);
+            position = new Vector2();
+            velocity = new Vector2();
+            acceleration = new Vector2();
         }
-        public void ApplyForce(float fx, float fy)
+        public void ApplyForce(string forceName)
         {
 
         }
