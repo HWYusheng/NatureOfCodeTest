@@ -26,42 +26,45 @@ namespace NatureOfCodeTest
             formHeight = height;
             formWidth = width;
             position = new Vector2();
-            velocity = new Vector2();
-            acceleration = new Vector2();
+            velocity = new Vector2(0, 0);
+            acceleration = new Vector2(0, 0);
             brushesColor = new SolidBrush(Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256)));
             frm = theForm;
             topSpeed = 15;
         }
-        public void ApplyForce(string forceName)
+        public void ApplyForce(Vector2 force)
         {
-
+            this.acceleration += force / mass;
+            this.Update();
         }
         public void Update()
         {
-
-            Point cp = frm.PointToClient(Cursor.Position);
-            mouse.X = cp.X;
-            mouse.Y = cp.Y;
-            Vector2 dir = Vector2.Subtract(mouse, position);
-            dir = Vector2.Normalize(dir);
-            dir = Vector2.Multiply(0.4f, dir);
-            acceleration = dir;
-            velocity = Vector2.Add(velocity, acceleration);
-            position = Vector2.Add(position, velocity);
-            if (position.X < 2 || position.X > this.formWidth - 70)
-            {
-
-                velocity.X = velocity.X * -1;
-            }
-            if (position.Y < 2 || position.Y > this.formHeight - 70)
-            {
-                velocity.Y = velocity.Y * -1;
-            }
-
+            this.velocity += this.acceleration;
+            this.position += this.velocity;
+            checkEdge();
+            this.acceleration *= 0;
         }
         public void Display(Graphics e)
         {
             e.FillEllipse(brushesColor, position.X, position.Y, 70, 70);
+        }
+        private void checkEdge()
+        {
+            if (this.position.X > formWidth)
+            {
+                this.position.X = formWidth;
+                this.velocity.X *= -1;
+            }
+            else if (this.position.X < 0)
+            {
+                this.velocity.X *= -1;
+                this.position.X = 0;
+            }
+            if (this.position.Y > formHeight)
+            {
+                this.velocity.Y *= -1;
+                this.position.Y = formHeight;
+            }
         }
     }
 }
