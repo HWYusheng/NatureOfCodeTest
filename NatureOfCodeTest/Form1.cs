@@ -29,11 +29,9 @@ namespace NatureOfCodeTest
             timer.Interval = 500;
             timer.Tick += Timer_Tick;
             this.Paint += Form1_Paint;
-            objectA = new Mover(this.Width, this.Height, this);
-            objectA.mass = 1;
-            objectA.position = new Vector2(this.Width/2, this.Height/2);
+            objectA = new Mover(this.Width, this.Height, this, new Vector2(this.Width / 2, this.Height / 2), new Vector2(0, 0), 1);
         }
-
+        
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Vector2 wind = new Vector2(7, 0);
