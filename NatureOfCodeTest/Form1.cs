@@ -35,7 +35,7 @@ namespace NatureOfCodeTest
             {
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
-                    new Vector2(rand.Next(1, this.Width), rand.Next(1, this.Height)),
+                    new Vector2(rand.Next(1, this.Width), rand.Next(1, this.Height/2)),
                     new Vector2(0, 0), 
                     (float)(rand.Next(2, 10))
                     ));

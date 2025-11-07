@@ -20,7 +20,7 @@ namespace NatureOfCodeTest
         int formWidth, formHeight;
         double topSpeed;
         Form frm;
-        private float mass;
+        float mass, radius = 70;
         public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m)
         {
             formHeight = height;
@@ -46,24 +46,24 @@ namespace NatureOfCodeTest
         }
         public void Display(Graphics e)
         {
-            e.FillEllipse(brushesColor, position.X, position.Y, 70, 70);
+            e.FillEllipse(brushesColor, position.X, position.Y, radius, radius);
         }
         public void checkEdge()
         {
-            if (this.position.X > formWidth-100)
+            if (this.position.X > formWidth)
             {
                 this.position.X = formWidth;
                 this.velocity.X *= -1;
             }
-            else if (this.position.X < 100)
+            else if (this.position.X < radius)
             {
                 this.velocity.X *= -1;
                 this.position.X = 0;
             }
-            if (this.position.Y > formHeight-120)
+            if (this.position.Y > formHeight-radius)
             {
                 this.velocity.Y *= -1;
-                this.position.Y = formHeight-120;
+                this.position.Y = formHeight-radius;
             }
 
         }
