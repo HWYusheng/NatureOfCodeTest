@@ -12,22 +12,23 @@ namespace NatureOfCodeTest
     internal class Mover
     {
         static Random rnd = new Random();
-        public Vector2 position;
-        public Vector2 velocity;
-        public Vector2 acceleration;
+        private Vector2 position;
+        private Vector2 velocity;
+        private Vector2 acceleration;
         Vector2 mouse = new Vector2();
         SolidBrush brushesColor;
         int formWidth, formHeight;
         float topSpeed;
         Form frm;
-        public float mass;
-        public Mover(int width, int height, Form theForm)
+        private float mass;
+        public Mover(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m)
         {
             formHeight = height;
             formWidth = width;
-            position = new Vector2();
-            velocity = new Vector2(0, 0);
+            position = pos;
+            velocity = velo;
             acceleration = new Vector2(0, 0);
+            mass = m;
             brushesColor = new SolidBrush(Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256)));
             frm = theForm;
             topSpeed = 15;
