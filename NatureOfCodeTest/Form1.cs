@@ -14,6 +14,8 @@ namespace NatureOfCodeTest
     public partial class Form1 : Form
     {
         Body objectA;
+        List<Body> objectList = new List<Body>();
+        Random rand = new Random();
         public Form1()
         {
             InitializeComponent();
@@ -21,23 +23,36 @@ namespace NatureOfCodeTest
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //this.DoubleBuffered = true;
+            this.DoubleBuffered = true;
             this.WindowState = FormWindowState.Maximized;
 
             Timer timer = new Timer();
             timer.Enabled = true;
-            timer.Interval = 500;
+            timer.Interval = 50;
             timer.Tick += Timer_Tick;
             this.Paint += Form1_Paint;
+            for (int i = 0; i < 5; i++)
+            {
+                objectList.Add(new Body(
+                    this.Width, this.Height, this, 
+                    new Vector2(rand.Next(1, this.Width), rand.Next(1, this.Height)),
+                    new Vector2(0, 0), 
+                    (float)(rand.Next(2, 10))
+                    ));
+            }
             objectA = new Body(this.Width, this.Height, this, new Vector2(this.Width / 2, this.Height / 2), new Vector2(0, 0), 1);
         }
         
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Vector2 wind = new Vector2(7, 0);
-            Vector2 gravity = new Vector2(0, 2);
-            objectA.ApplyForce(wind);
-            objectA.Display(e.Graphics);
+            Vector2 gravity = new Vector2(0, 10);
+            foreach (var item in objectList)
+            {
+                item.ApplyForce(gravity);
+                item.checkEdge();
+                item.Display(e.Graphics);
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)

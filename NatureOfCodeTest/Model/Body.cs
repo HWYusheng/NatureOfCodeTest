@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace NatureOfCodeTest
 {
-    internal class Mover
+    internal class Body
     {
         static Random rnd = new Random();
         private Vector2 position;
@@ -18,10 +18,10 @@ namespace NatureOfCodeTest
         Vector2 mouse = new Vector2();
         SolidBrush brushesColor;
         int formWidth, formHeight;
-        float topSpeed;
+        double topSpeed;
         Form frm;
         private float mass;
-        public Mover(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m)
+        public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m)
         {
             formHeight = height;
             formWidth = width;
@@ -42,30 +42,30 @@ namespace NatureOfCodeTest
         {
             this.velocity += this.acceleration;
             this.position += this.velocity;
-            checkEdge();
             this.acceleration *= 0;
         }
         public void Display(Graphics e)
         {
             e.FillEllipse(brushesColor, position.X, position.Y, 70, 70);
         }
-        private void checkEdge()
+        public void checkEdge()
         {
-            if (this.position.X > formWidth)
+            if (this.position.X > formWidth-100)
             {
                 this.position.X = formWidth;
                 this.velocity.X *= -1;
             }
-            else if (this.position.X < 0)
+            else if (this.position.X < 100)
             {
                 this.velocity.X *= -1;
                 this.position.X = 0;
             }
-            if (this.position.Y > formHeight)
+            if (this.position.Y > formHeight-120)
             {
                 this.velocity.Y *= -1;
-                this.position.Y = formHeight;
+                this.position.Y = formHeight-120;
             }
+
         }
     }
 }
