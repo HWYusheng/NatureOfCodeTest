@@ -11,16 +11,16 @@ namespace NatureOfCodeTest
 {
     internal class Body
     {
-        static Random rnd = new Random();
-        private Vector2 position;
-        private Vector2 velocity;
-        private Vector2 acceleration;
+        public Vector2 position { get; private set; }
+        public Vector2 velocity { get; private set; }
+        public Vector2 acceleration { get; private set; }
         Vector2 mouse = new Vector2();
         SolidBrush brushesColor;
         int formWidth, formHeight;
         double topSpeed;
         Form frm;
         float mass, radius = 70;
+        static Random rnd = new Random();
         public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m)
         {
             formHeight = height;
@@ -50,22 +50,30 @@ namespace NatureOfCodeTest
         }
         public void checkEdge()
         {
-            if (this.position.X > formWidth)
+            if (this.position.X > formWidth - radius)
             {
-                this.position.X = formWidth;
+                this.position.X = formWidth - radius;
                 this.velocity.X *= -1;
             }
-            else if (this.position.X < radius)
+            else if (this.position.X < 0)
             {
                 this.velocity.X *= -1;
                 this.position.X = 0;
             }
-            if (this.position.Y > formHeight-radius)
+            if (this.position.Y > formHeight - radius)
             {
                 this.velocity.Y *= -1;
-                this.position.Y = formHeight-radius;
+                this.position.Y = formHeight - radius;
             }
 
+        }
+        public bool contactEdge()
+        {
+            if (this.position.X > formWidth - radius || this.position.X < 0 || this.position.Y > formHeight - radius)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

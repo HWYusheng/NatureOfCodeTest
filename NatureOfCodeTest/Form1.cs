@@ -50,6 +50,13 @@ namespace NatureOfCodeTest
             foreach (var item in objectList)
             {
                 item.ApplyForce(gravity);
+                if (item.contactEdge())
+                {
+                    float c = 0.1f;
+                    Vector2 friction = item.velocity;
+                    friction *= -1;
+
+                }
                 item.checkEdge();
                 item.Display(e.Graphics);
             }
