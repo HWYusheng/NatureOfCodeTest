@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace NatureOfCodeTest
 {
-    internal class Body
+     internal class Body
     {
-        public Vector2 position { get; private set; }
+        public Vector2 position { get; private set; } = new Vector2(); 
         public Vector2 velocity { get; private set; }
         public Vector2 acceleration { get; private set; }
         Vector2 mouse = new Vector2();
@@ -19,12 +19,14 @@ namespace NatureOfCodeTest
         int formWidth, formHeight;
         double topSpeed;
         Form frm;
-        float mass, radius = 70;
+        float mass, radius = 70, G = 0.01f;
         static Random rnd = new Random();
         public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m)
         {
             formHeight = height;
             formWidth = width;
+            pos.X += (float)(Math.Sqrt(radius));
+            pos.Y += (float)(Math.Sqrt(radius));
             position = pos;
             velocity = velo;
             acceleration = new Vector2(0, 0);
@@ -38,6 +40,15 @@ namespace NatureOfCodeTest
             this.acceleration += force / mass;
             this.Update();
         }
+        public Vector2 AttractTo(Body AnotherBody)
+        {
+            Vector2 origin = new Vector2(0, 0);
+            Vector2 force = this.position - AnotherBody.position;
+            float distance = Mag(Limit(25f, force));
+            float strength = -(G * this.mass * AnotherBody.mass) / (distance*distance);
+            force = Vector2.Normalize(force) * strength * Mag(force);
+            return force;
+        }
         public void Update()
         {
             this.velocity += this.acceleration;
@@ -50,22 +61,42 @@ namespace NatureOfCodeTest
         }
         public void checkEdge()
         {
-            if (this.position.X > formWidth - radius)
+            Vector2 pos = position;
+            Vector2 velo = velocity;
+            if (pos.X > formWidth - radius)
             {
-                this.position.X = formWidth - radius;
-                this.velocity.X *= -1;
+                pos.X = formWidth - radius;
+                velo.X *= -1;
             }
-            else if (this.position.X < 0)
+            else if (pos.X < 0)
             {
-                this.velocity.X *= -1;
-                this.position.X = 0;
+                pos.X = 0;                
+                velo.X *= -1;
+                
             }
             if (this.position.Y > formHeight - radius)
             {
-                this.velocity.Y *= -1;
-                this.position.Y = formHeight - radius;
+                pos.Y = formHeight - radius;
+                velo.Y *= -1;                
             }
+            this.position = pos;
+            this.velocity = velo;
+        }
+        float Mag(Vector2 theVector)
+        {
+            return (float)Math.Sqrt(theVector.X * theVector.X + theVector.Y * theVector.Y);
+        }
 
+        public Vector2 Limit(float theLimit, Vector2 theVector)
+        {
+
+            if (Mag(theVector) > theLimit)
+            {
+
+                theVector.X = theVector.X * theLimit / Mag(theVector);
+                theVector.Y = theVector.Y * theLimit / Mag(theVector);
+            }
+            return theVector;
         }
         public bool contactEdge()
         {
