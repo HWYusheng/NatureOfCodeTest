@@ -19,7 +19,7 @@ namespace NatureOfCodeTest
         int formWidth, formHeight;
         double topSpeed;
         Form frm;
-        float mass, diameter, radius, G = 0.05f;
+        float mass, diameter, radius, G = 1f;
         static Random rnd = new Random();
         public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m, float dia)
         {
@@ -46,9 +46,10 @@ namespace NatureOfCodeTest
         {
             Vector2 origin = new Vector2(0, 0);
             Vector2 force = this.position - AnotherBody.position;
-            float distance = Mag(Limit(25f, force));
+            float distance = Mag(Limit(force, 5f, 25f));
+            
             float strength = -(G * this.mass * AnotherBody.mass) / (distance*distance);
-            force = Vector2.Normalize(force) * strength * Mag(force);
+            force = Vector2.Normalize(force) * strength;
             return force;
         }
         public void Update()
@@ -89,14 +90,19 @@ namespace NatureOfCodeTest
             return (float)Math.Sqrt(theVector.X * theVector.X + theVector.Y * theVector.Y);
         }
 
-        public Vector2 Limit(float theLimit, Vector2 theVector)
+        public Vector2 Limit(Vector2 theVector, float lowerLimit, float upperLimit)
         {
 
-            if (Mag(theVector) > theLimit)
+            if (Mag(theVector) > upperLimit)
             {
 
-                theVector.X = theVector.X * theLimit / Mag(theVector);
-                theVector.Y = theVector.Y * theLimit / Mag(theVector);
+                theVector.X = theVector.X * upperLimit / Mag(theVector);
+                theVector.Y = theVector.Y * upperLimit / Mag(theVector);
+            }
+            if (Mag(theVector) < lowerLimit)
+            {
+                theVector.X = theVector.X * Mag(theVector) / lowerLimit;
+                theVector.Y = theVector.Y * Mag(theVector) / lowerLimit;
             }
             return theVector;
         }

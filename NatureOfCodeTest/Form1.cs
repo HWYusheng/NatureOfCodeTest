@@ -36,14 +36,14 @@ namespace NatureOfCodeTest
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
                     new Vector2(rand.Next(this.Width/4, this.Width*3/5), rand.Next(this.Height/4, this.Height*3/5)),
-                    new Vector2(40, 0), 
+                    new Vector2(10, 0), 
                     (float)(50), 50f
                     ));
             }
             objectA = new Body(this.Width, this.Height, this, 
                 new Vector2(this.Width / 2, this.Height / 2), 
                 new Vector2(0, 0), 
-                300, 200f);
+                3000, 200f);
         }
         
         private void Form1_Paint(object sender, PaintEventArgs e)
