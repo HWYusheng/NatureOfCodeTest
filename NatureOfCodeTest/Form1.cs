@@ -31,23 +31,23 @@ namespace NatureOfCodeTest
             timer.Interval = 50;
             timer.Tick += Timer_Tick;
             this.Paint += Form1_Paint;
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
             {
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
                     new Vector2(rand.Next(1, this.Width), rand.Next(1, this.Height/2)),
-                    new Vector2(0, 0), 
-                    (float)(rand.Next(2, 5))
+                    new Vector2(30, -20), 
+                    (float)(rand.Next(10, 20)), 70f
                     ));
             }
-            objectA = new Body(this.Width, this.Height, this, new Vector2(this.Width / 2, this.Height / 2), new Vector2(1, 0), 1);
-            objectB = new Body(this.Width, this.Height, this, new Vector2(this.Width / 2, this.Height / 2), new Vector2(-1, 0), 1);
+            objectA = new Body(this.Width, this.Height, this, 
+                new Vector2(this.Width / 2, this.Height / 2), 
+                new Vector2(0, 0), 
+                300, 200f);
         }
         
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Vector2 wind = new Vector2(7, 0);
-            Vector2 gravity = new Vector2(0, 10);
 
             for (int i = 0; i < objectList.Count; i++)
             {
@@ -57,14 +57,16 @@ namespace NatureOfCodeTest
                     {
                         Vector2 force = objectList[i].AttractTo(objectList[j]);
                         objectList[i].ApplyForce(force);
-                        objectList[i].checkEdge();
 
                     }
 
                 }
+                Vector2 mforce = objectList[i].AttractTo(objectA);
+                objectList[i].ApplyForce(mforce);
                 objectList[i].Update();
                 objectList[i].Display(e.Graphics);
             }
+            objectA.Display(e.Graphics);
         }
 
         private void Timer_Tick(object sender, EventArgs e)

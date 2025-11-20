@@ -19,14 +19,16 @@ namespace NatureOfCodeTest
         int formWidth, formHeight;
         double topSpeed;
         Form frm;
-        float mass, radius = 70, G = 0.01f;
+        float mass, diameter, radius, G = 0.05f;
         static Random rnd = new Random();
-        public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m)
+        public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m, float r)
         {
             formHeight = height;
             formWidth = width;
-            pos.X += (float)(Math.Sqrt(radius));
-            pos.Y += (float)(Math.Sqrt(radius));
+            diameter = r;
+            radius = diameter / 2;
+            //pos.X += (float)(Math.Sqrt(2)*radius);
+            //pos.Y += (float)(Math.Sqrt(2)*radius);
             position = pos;
             velocity = velo;
             acceleration = new Vector2(0, 0);
@@ -57,12 +59,12 @@ namespace NatureOfCodeTest
         }
         public void Display(Graphics e)
         {
-            e.FillEllipse(brushesColor, position.X, position.Y, radius, radius);
+            e.FillEllipse(brushesColor, this.position.X - radius, this.position.Y - radius, diameter, diameter);
         }
         public void checkEdge()
         {
-            Vector2 pos = position;
-            Vector2 velo = velocity;
+            Vector2 pos = this.position;
+            Vector2 velo = this.velocity;
             if (pos.X > formWidth - radius)
             {
                 pos.X = formWidth - radius;
