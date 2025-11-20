@@ -21,11 +21,11 @@ namespace NatureOfCodeTest
         Form frm;
         float mass, diameter, radius, G = 0.05f;
         static Random rnd = new Random();
-        public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m, float r)
+        public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m, float dia)
         {
             formHeight = height;
             formWidth = width;
-            diameter = r;
+            diameter = dia;
             radius = diameter / 2;
             //pos.X += (float)(Math.Sqrt(2)*radius);
             //pos.Y += (float)(Math.Sqrt(2)*radius);
