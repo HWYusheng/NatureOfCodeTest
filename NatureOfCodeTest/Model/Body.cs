@@ -19,14 +19,13 @@ namespace NatureOfCodeTest
         int formWidth, formHeight;
         double topSpeed;
         Form frm;
-        float mass, diameter, radius, G = 1f;
+        float mass, radius, G = 1f;
         static Random rnd = new Random();
         public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m, float dia)
         {
             formHeight = height;
             formWidth = width;
-            diameter = dia;
-            radius = diameter / 2;
+            radius = dia / 2;
             //pos.X += (float)(Math.Sqrt(2)*radius);
             //pos.Y += (float)(Math.Sqrt(2)*radius);
             position = pos;
@@ -42,15 +41,15 @@ namespace NatureOfCodeTest
             this.acceleration += force / mass;
             this.Update();
         }
-        public Vector2 AttractTo(Body AnotherBody)
+        public void AttractTo(Body AnotherBody)
         {
             Vector2 origin = new Vector2(0, 0);
-            Vector2 force = this.position - AnotherBody.position;
-            float distance = Mag(Limit(force, 5f, 25f));
+            Vector2 gforce = -this.position + AnotherBody.position;
+            float distanceSq = Mag(gforce);
             
-            float strength = -(G * this.mass * AnotherBody.mass) / (distance*distance);
-            force = Vector2.Normalize(force) * strength;
-            return force;
+            float strength = (G * this.mass * AnotherBody.mass) / (distanceSq*distanceSq);
+            gforce = Vector2.Normalize(gforce) * strength;
+            this.ApplyForce(gforce);
         }
         public void Update()
         {
@@ -60,7 +59,7 @@ namespace NatureOfCodeTest
         }
         public void Display(Graphics e)
         {
-            e.FillEllipse(brushesColor, this.position.X - radius, this.position.Y - radius, diameter, diameter);
+            e.FillEllipse(brushesColor, this.position.X - radius, this.position.Y - radius, 2*radius, 2*radius);
         }
         public void checkEdge()
         {
