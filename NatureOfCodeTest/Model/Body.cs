@@ -48,7 +48,7 @@ namespace NatureOfCodeTest
             float distanceSq = Mag(gforce);
             
             float strength = (G * this.mass * AnotherBody.mass) / (distanceSq*distanceSq);
-            gforce = Vector2.Normalize(gforce) * strength;
+            gforce = Limit((Vector2.Normalize(gforce) * strength), 5, 30);
             this.ApplyForce(gforce);
         }
         public void Update()

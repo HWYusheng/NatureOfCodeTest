@@ -43,7 +43,7 @@ namespace NatureOfCodeTest
             sun = new Body(this.Width, this.Height, this, 
                 new Vector2(this.Width / 2, this.Height / 2), 
                 new Vector2(0, 0), 
-                300000f, 200f);
+                30000f, 200f);
         }
         
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -64,7 +64,6 @@ namespace NatureOfCodeTest
                 objectList[i].Update();
                 objectList[i].Display(e.Graphics);
             }
-
         }
 
         private void Timer_Tick(object sender, EventArgs e)
