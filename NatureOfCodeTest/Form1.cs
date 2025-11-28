@@ -45,7 +45,7 @@ namespace NatureOfCodeTest
                 new Vector2(0, 0), 
                 30000f, 200f);
         }
-        
+        //change to database
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 
