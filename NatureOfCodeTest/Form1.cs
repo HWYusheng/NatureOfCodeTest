@@ -56,12 +56,10 @@ namespace NatureOfCodeTest
                     if (j != i)
                     {
                         objectList[i].AttractTo(objectList[j]);
-
                     }
 
                 }
                 objectList[i].AttractTo(sun);
-                objectList[i].Update();
                 objectList[i].Display(e.Graphics);
             }
         }
