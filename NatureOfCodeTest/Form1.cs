@@ -37,13 +37,13 @@ namespace NatureOfCodeTest
                     this.Width, this.Height, this, 
                     new Vector2(rand.Next(this.Width/4, this.Width*3/5), rand.Next(this.Height/4, this.Height*3/5)),
                     new Vector2(0, 0), 
-                    (float)(50), 50f
+                    15f, 50f
                     ));
             }
             sun = new Body(this.Width, this.Height, this, 
                 new Vector2(this.Width / 2, this.Height / 2), 
                 new Vector2(0, 0), 
-                30000f, 200f);
+                500f, 200f);
         }
         //change to database
         private void Form1_Paint(object sender, PaintEventArgs e)
