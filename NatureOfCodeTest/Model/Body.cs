@@ -43,13 +43,18 @@ namespace NatureOfCodeTest
         }
         public void AttractTo(Body AnotherBody)
         {
-            Vector2 origin = new Vector2(0, 0);
             Vector2 gforce = -this.position + AnotherBody.position;
-            float distanceSq = Mag(gforce);
+            float distanceSq = Mag(Limit(gforce, 100f, 1000f));
             
             float strength = (G * this.mass * AnotherBody.mass) / (distanceSq*distanceSq);
-            gforce = Limit((Vector2.Normalize(gforce) * strength), 5, 30);
+            gforce = Vector2.Normalize(gforce) * strength;
             this.ApplyForce(gforce);
+            //let force = p5.Vector.sub(this.pos, mover.pos);
+            //let distanceSq = constrain(force.magSq(), 100, 1000);
+            //let G = 1;
+            //let strength = (G * (this.mass * mover.mass)) / distanceSq;
+            //force.setMag(strength);
+            //mover.applyForce(force);
         }
         public void Update()
         {
