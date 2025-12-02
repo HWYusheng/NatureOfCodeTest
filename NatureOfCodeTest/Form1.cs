@@ -31,7 +31,7 @@ namespace NatureOfCodeTest
             timer.Interval = 100;
             timer.Tick += Timer_Tick;
             this.Paint += Form1_Paint;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
