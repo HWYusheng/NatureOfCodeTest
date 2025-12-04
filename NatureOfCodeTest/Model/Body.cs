@@ -17,7 +17,6 @@ namespace NatureOfCodeTest
         Vector2 mouse = new Vector2();
         SolidBrush brushesColor;
         int formWidth, formHeight;
-        double topSpeed;
         Form frm;
         float mass, radius, G = 1f;
         static Random rnd = new Random();
@@ -34,12 +33,10 @@ namespace NatureOfCodeTest
             mass = m;
             brushesColor = new SolidBrush(Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256)));
             frm = theForm;
-            topSpeed = 15;
         }
         public void ApplyForce(Vector2 force)
         {
-            this.acceleration += force / mass;
-            this.Update();
+            this.acceleration += force / this.mass;
         }
         public void AttractTo(Body AnotherBody)
         {
@@ -60,7 +57,7 @@ namespace NatureOfCodeTest
         {
             this.velocity += this.acceleration;
             this.position += this.velocity;
-            this.acceleration *= 0;
+            this.acceleration = new Vector2(0, 0);
         }
         public void Display(Graphics e)
         {
@@ -93,6 +90,7 @@ namespace NatureOfCodeTest
         {
             return (float)Math.Sqrt(theVector.X * theVector.X + theVector.Y * theVector.Y);
         }
+
 
         public Vector2 Limit(Vector2 theVector, float lowerLimit, float upperLimit)
         {

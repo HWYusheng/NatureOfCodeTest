@@ -33,34 +33,58 @@ namespace NatureOfCodeTest
             this.Paint += Form1_Paint;
             for (int i = 0; i < 20; i++)
             {
+                Vector2 pos = new Vector2();
+                pos = RandomUnitVector() * rand.Next(300, 500);
+                Vector2 velo = RandomUnitVector() * rand.Next(20, 50);
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
-                    new Vector2(rand.Next(this.Width/4, this.Width*3/5), rand.Next(this.Height/4, this.Height*3/5)),
-                    new Vector2(0, 0), 
+                    pos,
+                    velo, 
                     15f, 50f
                     ));
             }
             sun = new Body(this.Width, this.Height, this, 
                 new Vector2(this.Width / 2, this.Height / 2), 
                 new Vector2(0, 0), 
-                500f, 200f);
+                50000f, 200f);
+        }
+        public Vector2 RandomUnitVector()
+        {
+            double random = rand.Next(0, 260); 
+            return new Vector2((float)(Math.Cos(random)), (float)Math.Sin(random));
         }
         //change to database
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 
-            for (int i = 0; i < objectList.Count; i++)
-            {
-                for (int j = 0; j < objectList.Count; j++)
-                {
-                    if (j != i)
-                    {
-                        objectList[i].AttractTo(objectList[j]);
-                    }
+            //for (int i = 0; i < objectList.Count; i++)
+            //{
+            //    objectList[i].AttractTo(sun);
+            //    for (int j = 0; j < objectList.Count; j++)
+            //    {
+            //        if (j != i)
+            //        {
+            //            objectList[i].AttractTo(objectList[j]);
+            //        }
 
+            //    }
+                
+            //}
+            foreach (var body in objectList)
+            {
+                body.AttractTo(sun);
+                foreach (var other in objectList)
+                {
+                    if (body != other)
+                    {
+                        body.AttractTo(other);
+                    }
                 }
-                objectList[i].AttractTo(sun);
-                objectList[i].Display(e.Graphics);
+            }
+            foreach (var item in objectList)
+            {
+                item.Update();
+                item.Display(e.Graphics);
             }
         }
 
