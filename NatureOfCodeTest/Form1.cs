@@ -31,11 +31,12 @@ namespace NatureOfCodeTest
             timer.Interval = 100;
             timer.Tick += Timer_Tick;
             this.Paint += Form1_Paint;
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 2; i++)
             {
                 Vector2 pos = new Vector2();
-                pos = RandomUnitVector() * rand.Next(300, 500);
-                Vector2 velo = RandomUnitVector() * rand.Next(20, 50);
+                //pos = RandomUnitVector() * rand.Next(300, 500);
+                pos = new Vector2(this.Width/4, this.Height/2);
+                Vector2 velo = new Vector2(2, 0)/* RandomUnitVector() * rand.Next(20, 40)*/;
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
                     pos,
@@ -86,6 +87,7 @@ namespace NatureOfCodeTest
                 item.Update();
                 item.Display(e.Graphics);
             }
+            sun.Display(e.Graphics);
         }
 
         private void Timer_Tick(object sender, EventArgs e)

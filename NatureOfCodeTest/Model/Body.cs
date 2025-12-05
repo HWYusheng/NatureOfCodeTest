@@ -6,10 +6,11 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace NatureOfCodeTest
 {
-     internal class Body
+    internal class Body 
     {
         public Vector2 position { get; private set; } = new Vector2(); 
         public Vector2 velocity { get; private set; }
@@ -40,10 +41,10 @@ namespace NatureOfCodeTest
         }
         public void AttractTo(Body AnotherBody)
         {
-            Vector2 gforce = -this.position + AnotherBody.position;
-            float distance = Mag(Limit(gforce, 100f, 1000f));
+            Vector2 gforce = this.position - AnotherBody.position;
+            float distanceSq = Vector2.DistanceSquared(this.position, AnotherBody.position);
             
-            float strength = (G * this.mass * AnotherBody.mass) / (distance*distance);
+            float strength = (G * this.mass * AnotherBody.mass) / (distanceSq);
             gforce = Vector2.Normalize(gforce) * strength;
             this.ApplyForce(gforce);
             //let force = p5.Vector.sub(this.pos, mover.pos);
@@ -90,8 +91,11 @@ namespace NatureOfCodeTest
         {
             return (float)Math.Sqrt(theVector.X * theVector.X + theVector.Y * theVector.Y);
         }
-
-
+        public Vector2 RandomUnitVector()
+        {
+            double random = rnd.Next(0, 260);
+            return new Vector2((float)(Math.Cos(random)), (float)Math.Sin(random));
+        }
         public Vector2 Limit(Vector2 theVector, float lowerLimit, float upperLimit)
         {
 
