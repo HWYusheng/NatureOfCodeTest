@@ -15,7 +15,7 @@ namespace NatureOfCodeTest
     {
         Body sun, objectB;
         List<Body> objectList = new List<Body>();
-        Random rand = new Random();
+        Random rnd = new Random();
         public Form1()
         {
             InitializeComponent();
@@ -31,12 +31,12 @@ namespace NatureOfCodeTest
             timer.Interval = 100;
             timer.Tick += Timer_Tick;
             this.Paint += Form1_Paint;
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Vector2 pos = new Vector2();
                 //pos = RandomUnitVector() * rand.Next(300, 500);
-                pos = new Vector2(this.Width/4, this.Height/2);
-                Vector2 velo = new Vector2(2, 0)/* RandomUnitVector() * rand.Next(20, 40)*/;
+                pos = new Vector2(rnd.Next(this.Width/2), rnd.Next(this.Height/2));
+                Vector2 velo = new Vector2(20, 15)/* RandomUnitVector() * rand.Next(20, 40)*/;
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
                     pos,
@@ -51,7 +51,7 @@ namespace NatureOfCodeTest
         }
         public Vector2 RandomUnitVector()
         {
-            double random = rand.Next(0, 260); 
+            double random = rnd.Next(0, 260); 
             return new Vector2((float)(Math.Cos(random)), (float)Math.Sin(random));
         }
         //change to database
@@ -87,7 +87,7 @@ namespace NatureOfCodeTest
                 item.Update();
                 item.Display(e.Graphics);
             }
-            sun.Display(e.Graphics);
+            //sun.Display(e.Graphics);
         }
 
         private void Timer_Tick(object sender, EventArgs e)

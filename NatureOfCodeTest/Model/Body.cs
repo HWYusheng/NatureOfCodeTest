@@ -37,14 +37,15 @@ namespace NatureOfCodeTest
         }
         public void ApplyForce(Vector2 force)
         {
-            this.acceleration += force / this.mass;
+            this.acceleration += Vector2.Divide(force, mass);
         }
         public void AttractTo(Body AnotherBody)
         {
             Vector2 gforce = this.position - AnotherBody.position;
             float distanceSq = Vector2.DistanceSquared(this.position, AnotherBody.position);
             
-            float strength = (G * this.mass * AnotherBody.mass) / (distanceSq);
+            float strength = -(G * this.mass * AnotherBody.mass) / (distanceSq);
+
             gforce = Vector2.Normalize(gforce) * strength;
             this.ApplyForce(gforce);
             //let force = p5.Vector.sub(this.pos, mover.pos);
