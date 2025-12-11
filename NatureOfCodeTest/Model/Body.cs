@@ -42,7 +42,7 @@ namespace NatureOfCodeTest
         public void AttractTo(Body AnotherBody)
         {
             Vector2 gforce = this.position - AnotherBody.position;
-            float distanceSq = Vector2.DistanceSquared(this.position, AnotherBody.position);
+            float distanceSq = Clamp(Vector2.DistanceSquared(this.position, AnotherBody.position), 100f, 1000f);
             
             float strength = -(G * this.mass * AnotherBody.mass) / (distanceSq);
 
@@ -96,6 +96,10 @@ namespace NatureOfCodeTest
         {
             double random = rnd.Next(0, 260);
             return new Vector2((float)(Math.Cos(random)), (float)Math.Sin(random));
+        }
+        public static float Clamp(float value, float min, float max)
+        {
+            return (value < min) ? min : (value > max) ? max : value;
         }
         public Vector2 Limit(Vector2 theVector, float lowerLimit, float upperLimit)
         {

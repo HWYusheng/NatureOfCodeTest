@@ -31,17 +31,17 @@ namespace NatureOfCodeTest
             timer.Interval = 100;
             timer.Tick += Timer_Tick;
             this.Paint += Form1_Paint;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 Vector2 pos = new Vector2();
                 //pos = RandomUnitVector() * rand.Next(300, 500);
                 pos = new Vector2(rnd.Next(this.Width/2), rnd.Next(this.Height/2));
-                Vector2 velo = new Vector2(20, 15)/* RandomUnitVector() * rand.Next(20, 40)*/;
+                Vector2 velo = new Vector2(10, -5)/* RandomUnitVector() * rand.Next(20, 40)*/;
                 objectList.Add(new Body(
                     this.Width, this.Height, this, 
                     pos,
                     velo, 
-                    15f, 50f
+                    15f, 25f
                     ));
             }
             sun = new Body(this.Width, this.Height, this, 
@@ -58,30 +58,30 @@ namespace NatureOfCodeTest
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 
-            //for (int i = 0; i < objectList.Count; i++)
-            //{
-            //    objectList[i].AttractTo(sun);
-            //    for (int j = 0; j < objectList.Count; j++)
-            //    {
-            //        if (j != i)
-            //        {
-            //            objectList[i].AttractTo(objectList[j]);
-            //        }
-
-            //    }
-                
-            //}
-            foreach (var body in objectList)
+            for (int i = 0; i < objectList.Count; i++)
             {
-                body.AttractTo(sun);
-                foreach (var other in objectList)
+                objectList[i].AttractTo(sun);
+                for (int j = 0; j < objectList.Count; j++)
                 {
-                    if (body != other)
+                    if (j != i)
                     {
-                        body.AttractTo(other);
+                        objectList[i].AttractTo(objectList[j]);
                     }
+
                 }
+
             }
+            //foreach (var body in objectList)
+            //{
+            //    body.AttractTo(sun);
+            //    foreach (var other in objectList)
+            //    {
+            //        if (body != other)
+            //        {
+            //            body.AttractTo(other);
+            //        }
+            //    }
+            //}
             foreach (var item in objectList)
             {
                 item.Update();
