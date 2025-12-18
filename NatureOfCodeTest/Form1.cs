@@ -82,6 +82,7 @@ namespace NatureOfCodeTest
             //        }
             //    }
             //}
+            // Because all the forces must be calculated prior to update
             foreach (var item in objectList)
             {
                 item.Update();
