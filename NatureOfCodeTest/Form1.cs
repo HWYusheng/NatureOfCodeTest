@@ -13,6 +13,12 @@ namespace NatureOfCodeTest
 {
     public partial class Form1 : Form
     {
+        private const double TargetFPS = 120.0;
+        private const double TargetFrameTime = 1000.0 / TargetFPS;
+        // https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=
+        // https://exoplanetarchive.ipac.caltech.edu/docs/program_interfaces.html#confirmed
+        // https://ui.adsabs.harvard.edu/abs/2013PASP..125..989A/abstract
+
         Body sun, objectB;
         List<Body> objectList = new List<Body>();
         Random rnd = new Random();
@@ -57,6 +63,15 @@ namespace NatureOfCodeTest
         //change to database
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            //e.Graphics setup
+            Graphics g = e.Graphics;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+            g.TextContrast = 0;
 
             for (int i = 0; i < objectList.Count; i++)
             {
