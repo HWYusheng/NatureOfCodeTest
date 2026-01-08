@@ -24,23 +24,23 @@ namespace NatureOfCodeTest
         Form frm;
         float mass, radius, G = 1f;
         static Random rnd = new Random();
-        private void CallAPI
-            {
-            // Source - https://stackoverflow.com/a
-            // Posted by Ronald Ramos, modified by community. See post 'Timeline' for change history
-            // Retrieved 2026-01-06, License - CC BY-SA 4.0
+        //private void CallAPI
+        //    {
+        //    // Source - https://stackoverflow.com/a
+        //    // Posted by Ronald Ramos, modified by community. See post 'Timeline' for change history
+        //    // Retrieved 2026-01-06, License - CC BY-SA 4.0
 
-            HttpClient httpClient = new HttpClient();
+        //    HttpClient httpClient = new HttpClient();
 
-        //specify to use TLS 1.2 as default connection
-        System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+        ////specify to use TLS 1.2 as default connection
+        //System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-        httpClient.BaseAddress = new Uri("https://foobar.com/");
-        httpClient.DefaultRequestHeaders.Accept.Clear();
-        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+        //httpClient.BaseAddress = new Uri("https://foobar.com/");
+        //httpClient.DefaultRequestHeaders.Accept.Clear();
+        //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
     
-        var task = httpClient.PostAsXmlAsync<DeviceRequest>("api/SaveData", request);
-            }
+        //var task = httpClient.PostAsXmlAsync<DeviceRequest>("api/SaveData", request);
+        //    }
         public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m, float dia)
         {
             formHeight = height;
