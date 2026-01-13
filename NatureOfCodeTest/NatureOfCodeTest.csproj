@@ -81,6 +81,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Body.cs" />
+    <Compile Include="Model\Component1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Model\Component1.Designer.cs">
+      <DependentUpon>Component1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plotting.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
