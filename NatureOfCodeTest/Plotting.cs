@@ -22,7 +22,7 @@ namespace NatureOfCodeTest
             // 1. Setup Physical Entities
             Star sun = new Star
             {
-                Name = "Sol",
+                Name = "Sun",
                 Mass = PhysicalConstants.SolarMass,
                 Position = new Vector2(0, 0)
             };
