@@ -86,6 +86,7 @@
     <Compile Include="Model\OrbitalElements.cs" />
     <Compile Include="Model\OrbitCalculator.cs" />
     <Compile Include="Model\PhysicalConstants.cs" />
+    <Compile Include="Model\RadialVelocityCalculator.cs" />
     <Compile Include="Plotting.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
