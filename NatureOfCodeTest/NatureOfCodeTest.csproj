@@ -73,7 +73,6 @@
   <ItemGroup>
     <Compile Include="API.cs" />
     <Compile Include="BodyHandler.cs" />
-    <Compile Include="Exo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
