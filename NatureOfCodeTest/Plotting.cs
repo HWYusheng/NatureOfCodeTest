@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NatureOfCodeTest.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,68 +11,64 @@ using System.Threading.Tasks;
 
 namespace NatureOfCodeTest
 {
-    internal class Plotting
+    static double Magnitude(Vector2 input) 
     {
-        //    def bin_spectrum(wl, fl, lmin: int = 10, lmax: int = 30_000):
-        //bwl = linspace(lmin, lmax, lmax - lmin + 1)
-        //bfl = zeros(bwl.size)
-        //istart, iend = 0, 0
-        //for ibin in range(bfl.size) :
-        //    cwl = bwl[ibin]
-        //    n = 0
-        //    while wl[istart] < cwl - 0.5:
-        //        istart += 1
-        //    iend = istart
-        //    while wl[iend] < cwl + 0.5 and iend<wl.size - 1:
-        //        bfl[ibin] += fl[istart]
-        //        n += 1
-        //        iend += 1
-        //    istart = iend
-        //    if n > 0:
-        //        bfl[ibin] /= n
-        //return bwl, bfl
-        //https://github.com/hpparvi/PyTransit/blob/master/pytransit/stars/btsettl.py
-        public float[] RaxisAngle(Vector2 axis, float theta)
+        return Math.Sqrt((input.X * input.X) + (input.Y * input.Y));
+    }
+    static void Main(string[] args)
+    {
+        // 1. Setup Physical Entities
+        Star sun = new Star
         {
-            float cosTheta = (float)Math.Cos(Convert.ToDouble(theta));
-            float sinTheta = (float)Math.Sin(Convert.ToDouble(theta));
-            float[] data = {
-                cosTheta + axis.X * axis.X * (1-cosTheta),
-                axis.X * axis.Y -sinTheta,
-            };
-            return data;
-        }
-        public (float[], float[]) binSpectrum(float[] wl, float[] fl, int lmin = 10, int lmax = 30000)
+            Name = "Sol",
+            Mass = PhysicalConstants.SolarMass,
+            Position = new Vector2(0, 0)
+        };
+
+        Planet earth = new Planet
         {
-            float[] bwl = linspace(lmin, lmax, lmax - lmin + 1);
-            float[] bfl = zeros(bwl.size);
-            int isStart = 0, isEnd = 0;
-            for (int bin = 0; bin < bfl.size; bin++)
+            Name = "Earth",
+            Mass = 5.972e24, // kg
+            Orbit = new OrbitalElements
             {
-                float cwl = bwl[bin];
-                int n = 0;
-                while (wl[isEnd]< cwl+0.5 && isEnd<wl.size -1)
-                {
-                    bfl[bin] += fl[isStart];
-                    n++;
-                    isEnd++;
-                    if (n>0)
-                    {
-                        bfl[bin] /= n;
-                    }
-                }
+                SemiMajorAxis = PhysicalConstants.AU,
+                Eccentricity = 0.0, // Circular orbit
+                Inclination = 0,
+                ArgumentOfPeriapsis = 0,
+                MeanAnomalyAtEpoch = 0,
+                EpochTime = 0
             }
-            return (bwl, bfl);
-        }
-        public (float, float) readSpectrum(string fname)
+        };
+
+        // 2. Initialize Engine
+        SimulationEngine engine = new SimulationEngine
         {
-            Body() df = new Body();
-            float wl = DecoderFallback 
-            float fl = 
-        }
-        public Int32 GetEff()
+            HostStar = sun,
+            OrbitingPlanet = earth,
+            TimeStep = 86400 * 30 // Move by 30 days per step
+        };
+
+        Console.WriteLine($"Simulating {earth.Name} orbiting {sun.Name}...");
+        Console.WriteLine("--------------------------------------------------------------------------------");
+        Console.WriteLine($"{"Day",-10} | {"Pos X (AU)",-12} | {"Pos Y (AU)",-12} | {"Vel (km/s)",-10}");
+        Console.WriteLine("--------------------------------------------------------------------------------");
+
+        // 3. Run Simulation for 12 steps (approx. 1 year)
+        for (int i = 0; i <= 12; i++)
         {
-            return Convert.ToInt32(1e2);
+            // Print current state
+            double posX_AU = earth.Position.X / PhysicalConstants.AU;
+            double posY_AU = earth.Position.Y / PhysicalConstants.AU;
+            double vel_kms = Magnitude(earth.Velocity) / 1000.0;
+
+            Console.WriteLine($"{i * 30,-10} | {posX_AU,12:F4} | {posY_AU,12:F4} | {vel_kms,10:F2}");
+
+            // Advance simulation
+            engine.Step();
         }
+        
+        Console.WriteLine("--------------------------------------------------------------------------------");
+        Console.WriteLine("Simulation Complete.");
+        Console.ReadLine();
     }
 }
