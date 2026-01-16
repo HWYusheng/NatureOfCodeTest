@@ -18,15 +18,13 @@ namespace NatureOfCodeTest
         private Timer simulationTimer;
         private RadialVelocityForm rvForm;
 
-        private float scaleAU_toPixels = 150f; // 1 AU = 150 pixels
+        private float scaleAUToPixels = 150f; // 1 AU = 150 pixels
 
         public Form1()
         {
             InitializeComponent();
-            this.DoubleBuffered = true;
-            
-            this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
-            
+            this.DoubleBuffered = true;            
+            this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;            
             this.pnlOrbitalMap.Resize += (s, e) => this.pnlOrbitalMap.Invalidate();
         }
 
@@ -73,7 +71,7 @@ namespace NatureOfCodeTest
         private void InitializeTimer()
         {
             simulationTimer = new Timer();
-            simulationTimer.Interval = 200; 
+            simulationTimer.Interval = 16; 
             simulationTimer.Tick += SimulationTimer_Tick;
             simulationTimer.Start();
         }
