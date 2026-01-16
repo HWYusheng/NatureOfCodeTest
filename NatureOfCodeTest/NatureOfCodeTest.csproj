@@ -12,7 +12,6 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <StartupObject>NatureOfCodeTest.Plotting</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -104,6 +103,12 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RadialVelocityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RadialVelocityForm.Designer.cs">
+      <DependentUpon>RadialVelocityForm.cs</DependentUpon>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NatureOfCodeTest.Model
 {
-    internal class SimulationSample
+    public class SimulationSample
     {
         public double Time { get; set; }
         public Vector2 StarPosition { get; set; }

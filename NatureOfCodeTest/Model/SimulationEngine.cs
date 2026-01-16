@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NatureOfCodeTest.Model
 {
-    internal class SimulationEngine
+    public class SimulationEngine
     {
         public Star HostStar { get; set; }
         public Planet OrbitingPlanet { get; set; }

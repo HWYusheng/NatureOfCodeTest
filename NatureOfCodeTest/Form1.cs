@@ -8,107 +8,173 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NatureOfCodeTest.Model;
 
 namespace NatureOfCodeTest
 {
     public partial class Form1 : Form
     {
-        private const double TargetFPS = 120.0;
-        private const double TargetFrameTime = 1000.0 / TargetFPS;
-        // https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=
-        // https://exoplanetarchive.ipac.caltech.edu/docs/program_interfaces.html#confirmed
-        // https://ui.adsabs.harvard.edu/abs/2013PASP..125..989A/abstract
+        private SimulationEngine engine;
+        private Timer simulationTimer;
+        private RadialVelocityForm rvForm;
 
-        Body sun, objectB;
-        List<Body> objectList = new List<Body>();
-        Random rnd = new Random();
+        // Visual scaling factors
+        private float scaleAUToPixels = 150f; // 1 AU = 150 pixels
+
         public Form1()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
+            
+            // Wire up Paint event for the Orbital Map Panel manually if not done in designer
+            this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
+            
+            // Handle form resize to keep center
+            this.pnlOrbitalMap.Resize += (s, e) => this.pnlOrbitalMap.Invalidate();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.DoubleBuffered = true;
-            this.WindowState = FormWindowState.Maximized;
-
-            Timer timer = new Timer();
-            timer.Enabled = true;
-            timer.Interval = 200;
-            timer.Tick += Timer_Tick;
-            this.Paint += Form1_Paint;
-            for (int i = 0; i < 100; i++)
-            {
-                Vector2 pos = new Vector2();
-                //pos = RandomUnitVector() * rand.Next(300, 500);
-                pos = new Vector2(rnd.Next(this.Width/2), rnd.Next(this.Height/2));
-                Vector2 velo = /*new Vector2(0, 10)*/ RandomUnitVector() * rnd.Next(15, 20);
-                objectList.Add(new Body(
-                    this.Width, this.Height, this, 
-                    pos,
-                    velo, 
-                    15f, 25f
-                    ));
-            }
-            sun = new Body(this.Width, this.Height, this, 
-                new Vector2(this.Width / 2, this.Height / 2), 
-                new Vector2(0, 0), 
-                500f, 200f);
+            InitializeSimulation();
+            InitializeTimer();
         }
-        public Vector2 RandomUnitVector()
-        {
-            double random = rnd.Next(0, 260); 
-            return new Vector2((float)(Math.Cos(random)), (float)Math.Sin(random));
-        }
-        //change to database
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            //e.Graphics setup
-            Graphics g = e.Graphics;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-            g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-            g.TextContrast = 0;
 
-            for (int i = 0; i < objectList.Count; i++)
+        private void InitializeSimulation()
+        {
+            // 1. Setup Physical Entities (Same as Plotting.cs)
+            Star sun = new Star
             {
-                objectList[i].AttractTo(sun);
-                for (int j = 0; j < objectList.Count; j++)
+                Name = "Sun",
+                Mass = PhysicalConstants.SolarMass,
+                Position = Vector2.Zero
+            };
+
+            Planet earth = new Planet
+            {
+                Name = "Earth",
+                Mass = 5.972e24, // kg
+                Orbit = new OrbitalElements
                 {
-                    if (j != i)
-                    {
-                        objectList[i].AttractTo(objectList[j]);
-                    }
-
+                    SemiMajorAxis = PhysicalConstants.AU,
+                    Eccentricity = 0.0167, // Earth's eccentricity
+                    Inclination = 0,
+                    ArgumentOfPeriapsis = 0, // Simplified
+                    MeanAnomalyAtEpoch = 0,
+                    EpochTime = 0
                 }
+            };
+            // Initial position estimation (simple start)
+            earth.Position = new Vector2((float)PhysicalConstants.AU, 0);
 
-            }
-            //foreach (var body in objectList)
-            //{
-            //    body.AttractTo(sun);
-            //    foreach (var other in objectList)
-            //    {
-            //        if (body != other)
-            //        {
-            //            body.AttractTo(other);
-            //        }
-            //    }
-            //}
-            // Because all the forces must be calculated prior to update
-            foreach (var item in objectList)
+            // 2. Initialize Engine
+            engine = new SimulationEngine
             {
-                item.Update();
-                item.Display(e.Graphics);
-            }
-            //sun.Display(e.Graphics);
+                HostStar = sun,
+                OrbitingPlanet = earth,
+                TimeStep = 86400 // 1 day per step
+            };
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void InitializeTimer()
         {
-            Invalidate();
+            simulationTimer = new Timer();
+            simulationTimer.Interval = 200; 
+            simulationTimer.Tick += SimulationTimer_Tick;
+            simulationTimer.Start();
+        }
+
+        private void SimulationTimer_Tick(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 5; i++) // Speed 5x
+            {
+                engine.Step();
+            }
+
+            // Redraw Orbital Map
+            pnlOrbitalMap.Invalidate();
+
+            if (rvForm != null && !rvForm.IsDisposed && rvForm.Visible)
+            {
+                rvForm.Redraw();
+            }
+        }
+
+        private void PnlOrbitalMap_Paint(object sender, PaintEventArgs e)
+        {
+            if (engine == null) return;
+
+            Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            int w = pnlOrbitalMap.Width;
+            int h = pnlOrbitalMap.Height;
+            float centerX = w / 2f;
+            float centerY = h / 2f;
+
+            // Draw Sun
+            float sunSize = 40;
+            RectangleF sunRect = new RectangleF(centerX - sunSize / 2, centerY - sunSize / 2, sunSize, sunSize);
+            g.FillEllipse(Brushes.Gold, sunRect);
+            g.DrawString(engine.HostStar.Name, this.Font, Brushes.White, sunRect.Location);
+
+            // Draw Orbit Path (Estimate ellipse)
+            // Only simplification. True Keplerian orbit drawing would need to transform 
+            
+            float semiMajorPixels = (float)(engine.OrbitingPlanet.Orbit.SemiMajorAxis / PhysicalConstants.AU * scaleAUToPixels);
+            
+            // For low eccentricity, it's nearly a circle centered at the star (focus)
+            // But technically the star is at one focus. 
+            // Focus offset c = a * e
+            float c = semiMajorPixels * (float)engine.OrbitingPlanet.Orbit.Eccentricity;
+            
+            // If ArgumentOfPeriapsis is 0, periapsis is at +X (or right) ?? 
+            // Typically periapsis is at angle w. Let's assume standard orientation for now.
+            // Focus is offset from center of ellipse. Star is at focus. 
+            // So Ellipse center is at StarPos - FocusOffset.
+            // Let's keep it simple: Draw the path based on history of positions? 
+            // Or just draw the theoretical storage. 
+            // Let's draw the theoretical ellipse centered correctly.
+            
+            // Center of ellipse relative to Star (0,0) is at (-c, 0) if periapsis is at 0 degrees.
+            float ellipseCenterX = centerX - c;
+            float ellipseCenterY = centerY;
+            float semiMinorPixels = semiMajorPixels * (float)Math.Sqrt(1 - engine.OrbitingPlanet.Orbit.Eccentricity * engine.OrbitingPlanet.Orbit.Eccentricity);
+            
+            RectangleF orbitRect = new RectangleF(ellipseCenterX - semiMajorPixels, ellipseCenterY - semiMinorPixels, semiMajorPixels * 2, semiMinorPixels * 2);
+            g.DrawEllipse(new Pen(Color.FromArgb(50, Color.White)), orbitRect);
+
+
+            // Draw Planet
+            // Position from engine is in meters. Convert to pixels.
+            Vector2 pPos = engine.OrbitingPlanet.Position;
+            float pX = centerX + (pPos.X / (float)PhysicalConstants.AU * scaleAUToPixels);
+            // Y needs to be inverted for screen coords? System.Numerics.Vector2 Y usually up is positive?
+            // In WinForms Y is down. 
+            // Let's assume simulation: standard math (Y up). So screen Y = centerY - planetY
+            float pY = centerY - (pPos.Y / (float)PhysicalConstants.AU * scaleAUToPixels);
+
+            float planetSize = 15;
+            g.FillEllipse(Brushes.CornflowerBlue, pX - planetSize / 2, pY - planetSize / 2, planetSize, planetSize);
+            g.DrawString(engine.OrbitingPlanet.Name, this.Font, Brushes.White, pX + 10, pY);
+
+            // Draw Time
+            string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
+            g.DrawString(timeStr, new Font("Arial", 12, FontStyle.Bold), Brushes.White, 10, 10);
+        }
+
+        private void btnShowRV_Click(object sender, EventArgs e)
+        {
+            if (rvForm == null || rvForm.IsDisposed)
+            {
+                rvForm = new RadialVelocityForm();
+                // Pass data reference
+                rvForm.Data = engine.Samples;
+                rvForm.Show();
+            }
+            else
+            {
+                rvForm.BringToFront();
+            }
         }
     }
 }

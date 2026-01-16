@@ -17,7 +17,7 @@ namespace NatureOfCodeTest
         {
             return Math.Sqrt((input.X * input.X) + (input.Y * input.Y));
         }
-        static void Main(string[] args)
+        static void Run(string[] args)
         {
             // 1. Setup Physical Entities
             Star sun = new Star
