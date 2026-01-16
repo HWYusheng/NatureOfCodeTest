@@ -85,7 +85,7 @@ namespace NatureOfCodeTest
                 engine.Step();
             }
 
-            // Redraw Orbital Map
+            // Redraw orbital map
             pnlOrbitalMap.Invalidate();
 
             if (rvForm != null && !rvForm.IsDisposed && rvForm.Visible)
