@@ -18,7 +18,6 @@ namespace NatureOfCodeTest
         private Timer simulationTimer;
         private RadialVelocityForm rvForm;
 
-        // Visual scaling factors
         private float scaleAUToPixels = 150f; // 1 AU = 150 pixels
 
         public Form1()
@@ -26,10 +25,8 @@ namespace NatureOfCodeTest
             InitializeComponent();
             this.DoubleBuffered = true;
             
-            // Wire up Paint event for the Orbital Map Panel manually if not done in designer
             this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
             
-            // Handle form resize to keep center
             this.pnlOrbitalMap.Resize += (s, e) => this.pnlOrbitalMap.Invalidate();
         }
 
@@ -41,7 +38,7 @@ namespace NatureOfCodeTest
 
         private void InitializeSimulation()
         {
-            // 1. Setup Physical Entities (Same as Plotting.cs)
+            // Setup objects
             Star sun = new Star
             {
                 Name = "Sun",
@@ -63,10 +60,8 @@ namespace NatureOfCodeTest
                     EpochTime = 0
                 }
             };
-            // Initial position estimation (simple start)
             earth.Position = new Vector2((float)PhysicalConstants.AU, 0);
 
-            // 2. Initialize Engine
             engine = new SimulationEngine
             {
                 HostStar = sun,
@@ -122,18 +117,8 @@ namespace NatureOfCodeTest
             
             float semiMajorPixels = (float)(engine.OrbitingPlanet.Orbit.SemiMajorAxis / PhysicalConstants.AU * scaleAUToPixels);
             
-            // For low eccentricity, it's nearly a circle centered at the star (focus)
-            // But technically the star is at one focus. 
-            // Focus offset c = a * e
             float c = semiMajorPixels * (float)engine.OrbitingPlanet.Orbit.Eccentricity;
             
-            // If ArgumentOfPeriapsis is 0, periapsis is at +X (or right) ?? 
-            // Typically periapsis is at angle w. Let's assume standard orientation for now.
-            // Focus is offset from center of ellipse. Star is at focus. 
-            // So Ellipse center is at StarPos - FocusOffset.
-            // Let's keep it simple: Draw the path based on history of positions? 
-            // Or just draw the theoretical storage. 
-            // Let's draw the theoretical ellipse centered correctly.
             
             // Center of ellipse relative to Star (0,0) is at (-c, 0) if periapsis is at 0 degrees.
             float ellipseCenterX = centerX - c;
@@ -145,19 +130,15 @@ namespace NatureOfCodeTest
 
 
             // Draw Planet
-            // Position from engine is in meters. Convert to pixels.
             Vector2 pPos = engine.OrbitingPlanet.Position;
             float pX = centerX + (pPos.X / (float)PhysicalConstants.AU * scaleAUToPixels);
-            // Y needs to be inverted for screen coords? System.Numerics.Vector2 Y usually up is positive?
-            // In WinForms Y is down. 
-            // Let's assume simulation: standard math (Y up). So screen Y = centerY - planetY
             float pY = centerY - (pPos.Y / (float)PhysicalConstants.AU * scaleAUToPixels);
 
             float planetSize = 15;
             g.FillEllipse(Brushes.CornflowerBlue, pX - planetSize / 2, pY - planetSize / 2, planetSize, planetSize);
             g.DrawString(engine.OrbitingPlanet.Name, this.Font, Brushes.White, pX + 10, pY);
 
-            // Draw Time
+            // Time
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             g.DrawString(timeStr, new Font("Arial", 12, FontStyle.Bold), Brushes.White, 10, 10);
         }
@@ -167,7 +148,6 @@ namespace NatureOfCodeTest
             if (rvForm == null || rvForm.IsDisposed)
             {
                 rvForm = new RadialVelocityForm();
-                // Pass data reference
                 rvForm.Data = engine.Samples;
                 rvForm.Show();
             }
