@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NatureOfCodeTest
 {
-    internal class Ploting
+    internal class Plotting
     {
         static double Magnitude(Vector2 input)
         {
