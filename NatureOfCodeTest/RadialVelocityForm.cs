@@ -16,7 +16,6 @@ namespace NatureOfCodeTest
             InitializeComponent();
             this.DoubleBuffered = true;
             this.pnlRVGraph.Paint += PnlRVGraph_Paint;
-            // Enable resizing redraw
             this.pnlRVGraph.Resize += (s, e) => this.pnlRVGraph.Invalidate();
         }
 
@@ -54,10 +53,6 @@ namespace NatureOfCodeTest
             g.DrawLine(axisPen, marginLeft, marginTop, marginLeft, h - marginBottom); // Y Axis
             g.DrawLine(axisPen, marginLeft, h - marginBottom, w - marginRight, h - marginBottom); // X Axis
 
-            // Determine scales
-            // We want to show a moving window or the whole history? 
-            // Let's show the whole history for now, up to a limit, or auto-scale.
-            // For educational purposes, seeing the whole sine wave develop is nice.
             
             double minTime = Data[0].Time;
             double maxTime = Data[Data.Count - 1].Time;
@@ -76,10 +71,6 @@ namespace NatureOfCodeTest
 
             float MapY(double v)
             {
-                // 0 should be at h/2 (or adjusted if taking up full height)
-                // Let's put 0 at the middle of the value area logic:
-                // Top (marginTop) is +maxVel
-                // Bottom (h - marginBottom) is -maxVel
                 float graphHeight = h - marginBottom - marginTop;
                 float halfHeight = graphHeight / 2;
                 float centerY = marginTop + halfHeight;
@@ -106,7 +97,7 @@ namespace NatureOfCodeTest
             }
 
             // Draw Labels (Simple)
-            Font font = new Font("Arial", 8); // removed "system" font family usage to be safe
+            Font font = new Font("Arial", 8);
             Brush brush = Brushes.White;
             g.DrawString($"RV Max: {maxVel:F2} m/s", font, brush, 5, marginTop);
             g.DrawString($"RV Min: {-maxVel:F2} m/s", font, brush, 5, h - marginBottom - 15);

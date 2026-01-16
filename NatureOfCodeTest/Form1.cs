@@ -18,7 +18,7 @@ namespace NatureOfCodeTest
         private Timer simulationTimer;
         private RadialVelocityForm rvForm;
 
-        private float scaleAUToPixels = 150f; // 1 AU = 150 pixels
+        private float scaleAU_toPixels = 150f; // 1 AU = 150 pixels
 
         public Form1()
         {
