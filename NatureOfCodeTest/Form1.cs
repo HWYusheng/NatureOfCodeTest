@@ -71,7 +71,7 @@ namespace NatureOfCodeTest
         private void InitializeTimer()
         {
             simulationTimer = new Timer();
-            simulationTimer.Interval = 16; 
+            simulationTimer.Interval = 100; 
             simulationTimer.Tick += SimulationTimer_Tick;
             simulationTimer.Start();
         }
@@ -110,7 +110,7 @@ namespace NatureOfCodeTest
             g.FillEllipse(Brushes.Gold, sunRect);
             g.DrawString(engine.HostStar.Name, this.Font, Brushes.White, sunRect.Location);
 
-            // Draw Orbit Path (Estimate ellipse)
+            // Draw Orbit Path (Estimate the ellipse)
             // Only simplification. True Keplerian orbit drawing would need to transform 
             
             float semiMajorPixels = (float)(engine.OrbitingPlanet.Orbit.SemiMajorAxis / PhysicalConstants.AU * scaleAUToPixels);
@@ -122,6 +122,7 @@ namespace NatureOfCodeTest
             float ellipseCenterX = centerX - c;
             float ellipseCenterY = centerY;
             float semiMinorPixels = semiMajorPixels * (float)Math.Sqrt(1 - engine.OrbitingPlanet.Orbit.Eccentricity * engine.OrbitingPlanet.Orbit.Eccentricity);
+                // Because the eccentricity is too small, the orbit looks like a circle anyway
             
             RectangleF orbitRect = new RectangleF(ellipseCenterX - semiMajorPixels, ellipseCenterY - semiMinorPixels, semiMajorPixels * 2, semiMinorPixels * 2);
             g.DrawEllipse(new Pen(Color.FromArgb(50, Color.White)), orbitRect);

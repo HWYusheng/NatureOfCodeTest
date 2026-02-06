@@ -32,7 +32,7 @@ namespace NatureOfCodeTest.Model
             double E = _solver.SolveEccentricAnomaly(M, orbit.Eccentricity);
 
             // 4. Tính tọa độ trong mặt phẳng quỹ đạo (Orbital Plane)
-            // Giả sử mặt phẳng nằm trên hệ trục X', Y' với Star tại tiêu điểm
+            // Giả sử mặt phẳng nằm trên hệ trục X', Y' với Ngoi Sao tại tiêu điểm
             double cosE = Math.Cos(E);
             double sinE = Math.Sin(E);
 
