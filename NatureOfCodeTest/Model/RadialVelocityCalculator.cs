@@ -9,7 +9,7 @@ namespace NatureOfCodeTest.Model
 {
     public class RadialVelocityCalculator
     {
-        public Vector2 LineOfSight { get; set; } = new Vector2(0, 1); // Mặc định nhìn theo trục Y
+        public Vector2 LineOfSight { get; set; } = new Vector2(-1, 0); // Nhìn từ bên trái (Observer ở bên trái)
         public double Dot(Vector2 other, Vector2 prime) { 
            return prime.X * other.X + prime.Y * other.Y; 
         }

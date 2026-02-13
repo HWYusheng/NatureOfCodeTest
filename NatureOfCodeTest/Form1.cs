@@ -73,17 +73,16 @@ namespace NatureOfCodeTest
         private void InitializeTimer()
         {
             simulationTimer = new Timer();
-            simulationTimer.Interval = 200; 
+            simulationTimer.Interval = 100; 
             simulationTimer.Tick += SimulationTimer_Tick;
             simulationTimer.Start();
         }
 
         private void SimulationTimer_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < 5; i++) // Speed 5x
-            {
-                engine.Step();
-            }
+
+            engine.Step();
+
 
             // Redraw orbital map
             pnlOrbitalMap.Invalidate();
@@ -103,44 +102,118 @@ namespace NatureOfCodeTest
 
             int w = pnlOrbitalMap.Width;
             int h = pnlOrbitalMap.Height;
-            float centerX = w / 2f;
+            
+            // Shift system slight toward the right
+            float centerX = w * 0.65f; 
             float centerY = h / 2f;
 
-            // Draw Sun
-            float sunSize = 40;
-            RectangleF sunRect = new RectangleF(centerX - sunSize / 2, centerY - sunSize / 2, sunSize, sunSize);
-            g.FillEllipse(Brushes.Gold, sunRect);
-            g.DrawString(engine.HostStar.Name, this.Font, Brushes.White, sunRect.Location);
+            // Wobble Amplification for modeling purposes
+            float wobbleAmplify = 4000f; 
+            Vector2 starPos = engine.HostStar.Position;
+            float starX = centerX + (starPos.X / (float)PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
+            float starY = centerY - (starPos.Y / (float)PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
 
-            // Draw Orbit Path (Estimate ellipse)
-            // Only simplification. True Keplerian orbit drawing would need to transform 
+            // Draw Observer (Telescope) to the left
+            float observerX = 60;
+            float observerY = centerY;
+            g.FillRectangle(Brushes.DimGray, observerX - 20, observerY - 5, 30, 10); // Telescope body
+            g.FillEllipse(Brushes.Silver, observerX - 25, observerY - 8, 10, 16); // Lens
+            g.DrawString("OBSERVER\n(Telescope)", this.Font, Brushes.LightSkyBlue, observerX - 30, observerY + 15);
+
+            // Integrated RV Waveform Visualization (Traveling from Star to Observer)
+            if (engine.Samples.Count > 1)
+            {
+                int maxVisibleSamples = 50;
+                int count = Math.Min(engine.Samples.Count, maxVisibleSamples);
+                
+                // We draw the most recent samples as a wave path
+                for (int i = 1; i < count; i++)
+                {
+                    int idx1 = engine.Samples.Count - i;
+                    int idx2 = engine.Samples.Count - (i + 1);
+                    
+                    var s1 = engine.Samples[idx1];
+                    var s2 = engine.Samples[idx2];
+                    
+                    // Map samples along the distance from starX to observerX
+                    // Phase moves waves forward
+                    float distTotal = starX - observerX;
+                    float progress1 = (float)i / maxVisibleSamples;
+                    float progress2 = (float)(i + 1) / maxVisibleSamples;
+                    
+                    float x1 = starX - progress1 * distTotal;
+                    float x2 = starX - progress2 * distTotal;
+                    
+                    // Vertical displacement proportional to RV
+                    float amp = 0.5f; // Scaling factor for wave amplitude
+                    float y1 = starY + (float)(s1.RadialVelocity * amp);
+                    float y2 = starY + (float)(s2.RadialVelocity * amp);
+                    
+                    // Color based on RV
+                    Color waveColor = s1.RadialVelocity > 0.5 ? Color.FromArgb(180, 255, 100, 100) : 
+                                     (s1.RadialVelocity < -0.5 ? Color.FromArgb(180, 100, 150, 255) : Color.LightGray);
+
+                    using (Pen wavePen = new Pen(waveColor, 2))
+                    {
+                        g.DrawLine(wavePen, x1, y1, x2, y2);
+                    }
+                }
+            }
+
+            // Draw Star (Sun)
+            float sunSize = 40;
+            RectangleF sunRect = new RectangleF(starX - sunSize / 2, starY - sunSize / 2, sunSize, sunSize);
+            g.FillEllipse(Brushes.Gold, sunRect);
+
+            // CROSSHAIRS: Different for Star and Barycenter
+            // 1. Star Crosshair (Yellow)
+            using (Pen starCrossPen = new Pen(Color.Red, 1))
+            {
+                g.DrawLine(starCrossPen, starX - 10, starY, starX + 10, starY);
+                g.DrawLine(starCrossPen, starX, starY - 10, starX, starY + 10);
+            }
             
+            // 2. Barycenter Crosshair (Cyan)
+            using (Pen baryCrossPen = new Pen(Color.Cyan, 1))
+            {
+                g.DrawLine(baryCrossPen, centerX - 8, centerY, centerX + 8, centerY);
+                g.DrawLine(baryCrossPen, centerX, centerY - 8, centerX, centerY + 8);
+                g.DrawString("Barycenter", this.Font, Brushes.Cyan, centerX + 10, centerY + 10);
+            }
+
+            // Orbit Path (Dashed)
             float semiMajorPixels = (float)(engine.OrbitingPlanet.Orbit.SemiMajorAxis / PhysicalConstants.AU * scaleAUToPixels);
-            
             float c = semiMajorPixels * (float)engine.OrbitingPlanet.Orbit.Eccentricity;
-            
-            
-            // Center of ellipse relative to Star (0,0) is at (-c, 0) if periapsis is at 0 degrees.
             float ellipseCenterX = centerX - c;
             float ellipseCenterY = centerY;
             float semiMinorPixels = semiMajorPixels * (float)Math.Sqrt(1 - engine.OrbitingPlanet.Orbit.Eccentricity * engine.OrbitingPlanet.Orbit.Eccentricity);
             
             RectangleF orbitRect = new RectangleF(ellipseCenterX - semiMajorPixels, ellipseCenterY - semiMinorPixels, semiMajorPixels * 2, semiMinorPixels * 2);
-            g.DrawEllipse(new Pen(Color.FromArgb(50, Color.White)), orbitRect);
+            using (Pen dashedPen = new Pen(Color.FromArgb(80, Color.White), 1))
+            {
+                dashedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                g.DrawEllipse(dashedPen, orbitRect);
+            }
 
-
-            // Draw Planet
+            // Planet
             Vector2 pPos = engine.OrbitingPlanet.Position;
             float pX = centerX + (pPos.X / (float)PhysicalConstants.AU * scaleAUToPixels);
             float pY = centerY - (pPos.Y / (float)PhysicalConstants.AU * scaleAUToPixels);
-
             float planetSize = 15;
             g.FillEllipse(Brushes.CornflowerBlue, pX - planetSize / 2, pY - planetSize / 2, planetSize, planetSize);
-            g.DrawString(engine.OrbitingPlanet.Name, this.Font, Brushes.White, pX + 10, pY);
 
-            // Time
+            // Radial line
+            using (Pen radialPen = new Pen(Color.FromArgb(40, Color.Lime), 1))
+            {
+                g.DrawLine(radialPen, starX, starY, pX, pY);
+            }
+
+            // Labels
+            double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
+            string rvStr = $"Radial Velocity: {rv:F2} m/s";
             g.DrawString(timeStr, new Font("Arial", 12, FontStyle.Bold), Brushes.White, 10, 10);
+            g.DrawString(rvStr, new Font("Arial", 10), Brushes.LightGray, 10, 35);
         }
 
         private void btnShowRV_Click(object sender, EventArgs e)

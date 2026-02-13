@@ -96,21 +96,60 @@ namespace NatureOfCodeTest
             // Draw Data
             if (Data.Count > 1)
             {
-                PointF[] points = new PointF[Data.Count];
-                for(int i=0; i<Data.Count; i++)
+                // Draw graph using segments to color-code the Doppler shift
+                for (int i = 1; i < Data.Count; i++)
                 {
-                    points[i] = new PointF(MapX(Data[i].Time), MapY(Data[i].RadialVelocity));
+                    double rvStart = Data[i - 1].RadialVelocity;
+                    double rvEnd = Data[i].RadialVelocity;
+                    double avgRV = (rvStart + rvEnd) / 2.0;
+
+                    // Color based on RV: Positive (Red/Receding), Negative (Blue/Approaching)
+                    Color segmentColor;
+                    if (avgRV > 0.5) segmentColor = Color.FromArgb(255, 100, 100); // Redshift
+                    else if (avgRV < -0.5) segmentColor = Color.FromArgb(100, 150, 255); // Blueshift
+                    else segmentColor = Color.LightGray;
+
+                    using (Pen segmentPen = new Pen(segmentColor, 2))
+                    {
+                        g.DrawLine(segmentPen, MapX(Data[i - 1].Time), MapY(rvStart), MapX(Data[i].Time), MapY(rvEnd));
+                    }
+                    
+                    // Optional: Draw small vertical markers to simulate "wavelength" compression/stretching
+                    // This is a stylistic choice for the "sin wave" requested
+                    if (i % 5 == 0)
+                    {
+                        float x = MapX(Data[i].Time);
+                        float y = MapY(Data[i].RadialVelocity);
+                        float spread = (float)(5 + avgRV / maxVel * 5); // visually "stretches" markers
+                        g.DrawLine(new Pen(Color.FromArgb(50, segmentColor), 1), x, y - spread, x, y + spread);
+                    }
                 }
+
+                // Highlight current point
+                PointF lastPoint = new PointF(MapX(Data[Data.Count - 1].Time), MapY(Data[Data.Count - 1].RadialVelocity));
+                g.FillEllipse(Brushes.White, lastPoint.X - 3, lastPoint.Y - 3, 6, 6);
                 
-                g.DrawLines(new Pen(Color.Lime, 2), points);
+                // Doppler shift explanation
+                string shiftText = "";
+                Color shiftColor = Color.White;
+                double currentRV = Data[Data.Count-1].RadialVelocity;
+                
+                if (currentRV > 1) { shiftText = "REDSHIFT (Wavelength Stretches)"; shiftColor = Color.LightCoral; }
+                else if (currentRV < -1) { shiftText = "BLUESHIFT (Wavelength Compresses)"; shiftColor = Color.LightSkyBlue; }
+                else { shiftText = "STABLE"; shiftColor = Color.Gray; }
+
+                g.DrawString(shiftText, new Font("Arial", 10, FontStyle.Bold), new SolidBrush(shiftColor), w - 250, marginTop);
             }
 
             // Draw Labels (Simple)
-            Font font = new Font("Arial", 8); // removed "system" font family usage to be safe
+            Font font = new Font("Arial", 8); 
             Brush brush = Brushes.White;
             g.DrawString($"RV Max: {maxVel:F2} m/s", font, brush, 5, marginTop);
             g.DrawString($"RV Min: {-maxVel:F2} m/s", font, brush, 5, h - marginBottom - 15);
             g.DrawString($"Time: {(maxTime - minTime)/86400.0:F1} days", font, brush, w - 100, h - 20);
+            
+            // Explanation of detection
+            g.DrawString("Star's wobble causes Doppler shift in light spectrum", font, Brushes.Gray, marginLeft, 5);
         }
     }
 }

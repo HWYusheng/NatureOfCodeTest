@@ -20,7 +20,19 @@ namespace NatureOfCodeTest.Model
 
         public void Step()
         {
+            // Reset star to origin to compute relative orbital position of the planet
+            HostStar.Position = System.Numerics.Vector2.Zero;
             _orbitCalc.ComputePlanetState(OrbitingPlanet, HostStar, CurrentTime);
+            
+            // The position calculated is now the relative position (Planet - Star)
+            System.Numerics.Vector2 relativePos = OrbitingPlanet.Position;
+            double totalMass = HostStar.Mass + OrbitingPlanet.Mass;
+
+            // Update positions relative to the barycenter (located at 0,0)
+            HostStar.Position = System.Numerics.Vector2.Multiply((float)(-OrbitingPlanet.Mass / totalMass), relativePos);
+            OrbitingPlanet.Position = System.Numerics.Vector2.Multiply((float)(HostStar.Mass / totalMass), relativePos);
+
+            // Update velocity (reflex motion)
             HostStar.Velocity = _orbitCalc.ComputeStarReflexMotion(OrbitingPlanet, HostStar);
 
             Samples.Add(new SimulationSample
