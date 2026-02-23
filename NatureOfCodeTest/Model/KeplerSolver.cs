@@ -11,7 +11,7 @@ namespace NatureOfCodeTest.Model
         public double SolveEccentricAnomaly(double M, double e)
         {
             double E = M; // Khởi tạo ban đầu
-            for (int i = 0; i < 10; i++) // Newton-Raphson
+            for (int i = 0; i < 10; i++) // Newton-Raphson to estimate the root
             {
                 E = E - (E - e * Math.Sin(E) - M) / (1 - e * Math.Cos(E));
             }
