@@ -28,7 +28,7 @@ namespace NatureOfCodeTest.Model
             System.Numerics.Vector2 relativePos = OrbitingPlanet.Position;
             double totalMass = HostStar.Mass + OrbitingPlanet.Mass;
 
-            // Update positions relative to the barycenter (located at 0,0)
+            // Update position crosshair relative to the barycenter (located at 0,0)
             HostStar.Position = System.Numerics.Vector2.Multiply((float)(-OrbitingPlanet.Mass / totalMass), relativePos);
             OrbitingPlanet.Position = System.Numerics.Vector2.Multiply((float)(HostStar.Mass / totalMass), relativePos);
 
