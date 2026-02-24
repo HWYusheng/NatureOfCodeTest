@@ -209,7 +209,7 @@ namespace NatureOfCodeTest
                 g.DrawLine(radialPen, starX, starY, pX, pY);
             }
 
-            // Labels
+            // ----------------------- Labels (this is where need to be fix, turn it into a label to prevent)
             double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             string rvStr = $"Radial Velocity: {rv:F2} m/s";
