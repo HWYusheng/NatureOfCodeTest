@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NatureOfCodeTest.Model
 {
-    internal class PhysicalConstants
+    public class PhysicalConstants
     {
         public const double G = 6.67430e-11;
         public const double SpeedOfLight = 299792458;

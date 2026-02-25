@@ -9,7 +9,7 @@ namespace NatureOfCodeTest
 {
     public partial class RadialVelocityForm : Form
     {
-        public List<SimulationSample> Data { get; set; }
+        public List<NatureOfCodeTest.Model.SimulationSample> Data { get; set; }
 
         public RadialVelocityForm()
         {
@@ -59,32 +59,34 @@ namespace NatureOfCodeTest
             // Let's show the whole history for now, up to a limit, or auto-scale.
             // For educational purposes, seeing the whole sine wave develop is nice.
             
-            double minTime = Data[0].Time;
+            // Determine scales
+            // Use a fixed time window for scrolling
+            double windowSize = 365 * 86400.0; // Show last 1 year of data
             double maxTime = Data[Data.Count - 1].Time;
-            if (maxTime == minTime) maxTime += 1; // Avoid div by zero
+            double minTime = Math.Max(Data[0].Time, maxTime - windowSize);
+            
+            // X-axis min label should follow scrolling
+            float displayMinTime = (float)minTime;
 
             // Velocity range: find max absolute value to keep 0 in center
+            // We'll scan the whole data for maxVel to keep the Y-scale stable, or just the window?
+            // Stable Y-scale is usually better for comparison.
             double maxVel = Data.Select(d => Math.Abs(d.RadialVelocity)).Max();
-            if (maxVel < 1) maxVel = 1; // Default min scale
-            maxVel *= 1.1; // Add padding
+            if (maxVel < 1) maxVel = 1; 
+            maxVel *= 1.1; 
 
             // Coordinate mapping functions
             float MapX(double t)
             {
-                return marginLeft + (float)((t - minTime) / (maxTime - minTime) * (w - marginLeft - marginRight));
+                if (t < minTime) return -1000; // Off screen
+                return marginLeft + (float)((t - minTime) / windowSize * (w - marginLeft - marginRight));
             }
 
             float MapY(double v)
             {
-                // 0 should be at h/2 (or adjusted if taking up full height)
-                // Let's put 0 at the middle of the value area logic:
-                // Top (marginTop) is +maxVel
-                // Bottom (h - marginBottom) is -maxVel
                 float graphHeight = h - marginBottom - marginTop;
                 float halfHeight = graphHeight / 2;
                 float centerY = marginTop + halfHeight;
-                
-                // v positive -> up (smaller Y), v negative -> down (larger Y)
                 return centerY - (float)(v / maxVel * halfHeight);
             }
 
@@ -96,32 +98,54 @@ namespace NatureOfCodeTest
             // Draw Data
             if (Data.Count > 1)
             {
-                // Draw graph using segments to color-code the Doppler shift
-                for (int i = 1; i < Data.Count; i++)
+                // Find index to start drawing from for performance
+                int startIndex = 0;
+                for (int i = 0; i < Data.Count; i++) { if (Data[i].Time >= minTime) { startIndex = Math.Max(0, i - 1); break; } }
+
+                for (int i = startIndex + 1; i < Data.Count; i++)
                 {
                     double rvStart = Data[i - 1].RadialVelocity;
                     double rvEnd = Data[i].RadialVelocity;
                     double avgRV = (rvStart + rvEnd) / 2.0;
 
-                    // Color based on RV: Positive (Red/Receding), Negative (Blue/Approaching)
+                    // Smooth Color Transition Logic (Purple to Red)
+                    float rvFactor = (float)Math.Max(-1, Math.Min(1, avgRV / 50.0));
                     Color segmentColor;
-                    if (avgRV > 0.5) segmentColor = Color.FromArgb(255, 100, 100); // Redshift
-                    else if (avgRV < -0.5) segmentColor = Color.FromArgb(100, 150, 255); // Blueshift
-                    else segmentColor = Color.LightGray;
+                    if (rvFactor > 0)
+                    {
+                        int r = (int)(211 + (255 - 211) * rvFactor);
+                        int gValue = (int)(211 - 211 * rvFactor);
+                        int b = (int)(211 - 211 * rvFactor);
+                        segmentColor = Color.FromArgb(255, r, gValue, b);
+                    }
+                    else
+                    {
+                        float absFactor = Math.Abs(rvFactor);
+                        int r = (int)(211 + (160 - 211) * absFactor);
+                        int gValue = (int)(211 + (32 - 211) * absFactor);
+                        int b = (int)(211 + (240 - 211) * absFactor);
+                        segmentColor = Color.FromArgb(255, r, gValue, b);
+                    }
 
                     using (Pen segmentPen = new Pen(segmentColor, 2))
                     {
-                        g.DrawLine(segmentPen, MapX(Data[i - 1].Time), MapY(rvStart), MapX(Data[i].Time), MapY(rvEnd));
+                        float x1 = MapX(Data[i - 1].Time);
+                        float x2 = MapX(Data[i].Time);
+                        if (x2 >= marginLeft)
+                        {
+                            g.DrawLine(segmentPen, Math.Max(marginLeft, x1), MapY(rvStart), x2, MapY(rvEnd));
+                        }
                     }
                     
-                    // Optional: Draw small vertical markers to simulate "wavelength" compression/stretching
-                    // This is a stylistic choice for the "sin wave" requested
                     if (i % 5 == 0)
                     {
                         float x = MapX(Data[i].Time);
-                        float y = MapY(Data[i].RadialVelocity);
-                        float spread = (float)(5 + avgRV / maxVel * 5); // visually "stretches" markers
-                        g.DrawLine(new Pen(Color.FromArgb(50, segmentColor), 1), x, y - spread, x, y + spread);
+                        if (x >= marginLeft)
+                        {
+                            float y = MapY(Data[i].RadialVelocity);
+                            float spread = (float)(5 + Math.Abs(avgRV) / maxVel * 5); 
+                            g.DrawLine(new Pen(Color.FromArgb(80, segmentColor), 1), x, y - spread, x, y + spread);
+                        }
                     }
                 }
 
@@ -134,8 +158,8 @@ namespace NatureOfCodeTest
                 Color shiftColor = Color.White;
                 double currentRV = Data[Data.Count-1].RadialVelocity;
                 
-                if (currentRV > 1) { shiftText = "REDSHIFT (Wavelength Stretches)"; shiftColor = Color.LightCoral; }
-                else if (currentRV < -1) { shiftText = "BLUESHIFT (Wavelength Compresses)"; shiftColor = Color.LightSkyBlue; }
+                if (currentRV > 1) { shiftText = "REDSHIFT (Receding)"; shiftColor = Color.LightCoral; }
+                else if (currentRV < -1) { shiftText = "PURPLESHIFT (Approaching)"; shiftColor = Color.Plum; }
                 else { shiftText = "STABLE"; shiftColor = Color.Gray; }
 
                 g.DrawString(shiftText, new Font("Arial", 10, FontStyle.Bold), new SolidBrush(shiftColor), w - 250, marginTop);

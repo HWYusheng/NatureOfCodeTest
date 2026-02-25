@@ -20,20 +20,20 @@ namespace NatureOfCodeTest
         static void Run(string[] args)
         {
             // 1. Setup Physical Entities
-            Star sun = new Star
+            NatureOfCodeTest.Model.Star sun = new NatureOfCodeTest.Model.Star
             {
                 Name = "Sun",
-                Mass = PhysicalConstants.SolarMass,
+                Mass = NatureOfCodeTest.Model.PhysicalConstants.SolarMass,
                 Position = new Vector2(0, 0)
             };
 
-            Planet earth = new Planet
+            NatureOfCodeTest.Model.Planet earth = new NatureOfCodeTest.Model.Planet
             {
                 Name = "Earth",
                 Mass = 5.972e24, // kg
-                Orbit = new OrbitalElements
+                Orbit = new NatureOfCodeTest.Model.OrbitalElements
                 {
-                    SemiMajorAxis = PhysicalConstants.AU,
+                    SemiMajorAxis = NatureOfCodeTest.Model.PhysicalConstants.AU,
                     Eccentricity = 0.0, // Circular orbit
                     Inclination = 0,
                     ArgumentOfPeriapsis = 0,
@@ -43,7 +43,7 @@ namespace NatureOfCodeTest
             };
 
             // 2. Initialize Engine
-            SimulationEngine engine = new SimulationEngine
+            NatureOfCodeTest.Model.SimulationEngine engine = new NatureOfCodeTest.Model.SimulationEngine
             {
                 HostStar = sun,
                 OrbitingPlanet = earth,
@@ -59,8 +59,8 @@ namespace NatureOfCodeTest
             for (int i = 0; i <= 12; i++)
             {
                 // Print current state
-                double posX_AU = earth.Position.X / PhysicalConstants.AU;
-                double posY_AU = earth.Position.Y / PhysicalConstants.AU;
+                double posX_AU = earth.Position.X / NatureOfCodeTest.Model.PhysicalConstants.AU;
+                double posY_AU = earth.Position.Y / NatureOfCodeTest.Model.PhysicalConstants.AU;
                 double vel_kms = Magnitude(earth.Velocity) / 1000.0;
 
                 Console.WriteLine($"{i * 30,-10} | {posX_AU,12:F4} | {posY_AU,12:F4} | {vel_kms,10:F2}");

@@ -14,7 +14,7 @@ namespace NatureOfCodeTest
 {
     public partial class Form1 : Form
     {
-        private SimulationEngine engine;
+        private NatureOfCodeTest.Model.SimulationEngine engine;
         private Timer simulationTimer;
         private RadialVelocityForm rvForm;
 
@@ -39,20 +39,20 @@ namespace NatureOfCodeTest
         private void InitializeSimulation()
         {
             // Setup objects
-            Star sun = new Star
+            NatureOfCodeTest.Model.Star sun = new NatureOfCodeTest.Model.Star
             {
                 Name = "Sun",
-                Mass = PhysicalConstants.SolarMass,
+                Mass = NatureOfCodeTest.Model.PhysicalConstants.SolarMass,
                 Position = Vector2.Zero
             };
 
-            Planet earth = new Planet
+            NatureOfCodeTest.Model.Planet earth = new NatureOfCodeTest.Model.Planet
             {
                 Name = "Earth",
                 Mass = 5.972e24, // kg
-                Orbit = new OrbitalElements
+                Orbit = new NatureOfCodeTest.Model.OrbitalElements
                 {
-                    SemiMajorAxis = PhysicalConstants.AU,
+                    SemiMajorAxis = NatureOfCodeTest.Model.PhysicalConstants.AU,
                     Eccentricity = 0.0167, // Earth's eccentricity
                     Inclination = 0,
                     ArgumentOfPeriapsis = 0, // Simplified
@@ -60,7 +60,7 @@ namespace NatureOfCodeTest
                     EpochTime = 0
                 }
             };
-            earth.Position = new Vector2((float)PhysicalConstants.AU, 0);
+            earth.Position = new Vector2((float)NatureOfCodeTest.Model.PhysicalConstants.AU, 0);
 
             engine = new SimulationEngine
             {
@@ -110,8 +110,8 @@ namespace NatureOfCodeTest
             // Wobble Amplification for modeling purposes
             float wobbleAmplify = 4000f; 
             Vector2 starPos = engine.HostStar.Position;
-            float starX = centerX + (starPos.X / (float)PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
-            float starY = centerY - (starPos.Y / (float)PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
+            float starX = centerX + (starPos.X / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
+            float starY = centerY - (starPos.Y / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
 
             // Draw Observer (Telescope) to the left
             float observerX = 60;
@@ -123,7 +123,7 @@ namespace NatureOfCodeTest
             // Integrated RV Waveform Visualization (Traveling from Star to Observer)
             if (engine.Samples.Count > 1)
             {
-                int maxVisibleSamples = 50;
+                int maxVisibleSamples = 200; // Increased for better interval visibility
                 int count = Math.Min(engine.Samples.Count, maxVisibleSamples);
                 
                 // We draw the most recent samples as a wave path
@@ -136,7 +136,6 @@ namespace NatureOfCodeTest
                     var s2 = engine.Samples[idx2];
                     
                     // Map samples along the distance from starX to observerX
-                    // Phase moves waves forward
                     float distTotal = starX - observerX;
                     float progress1 = (float)i / maxVisibleSamples;
                     float progress2 = (float)(i + 1) / maxVisibleSamples;
@@ -145,13 +144,37 @@ namespace NatureOfCodeTest
                     float x2 = starX - progress2 * distTotal;
                     
                     // Vertical displacement proportional to RV
-                    float amp = 0.5f; // Scaling factor for wave amplitude
+                    float amp = 0.5f; 
                     float y1 = starY + (float)(s1.RadialVelocity * amp);
                     float y2 = starY + (float)(s2.RadialVelocity * amp);
                     
-                    // Color based on RV
-                    Color waveColor = s1.RadialVelocity > 0.5 ? Color.FromArgb(180, 255, 100, 100) : 
-                                     (s1.RadialVelocity < -0.5 ? Color.FromArgb(180, 100, 150, 255) : Color.LightGray);
+                    // Smooth Color Transition Logic: Purple (Negative/BlueShift) to Red (Positive/RedShift)
+                    // Let's normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
+                    float rvFactor = (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
+                    
+                    // Color mapping: 
+                    // rv = -1 (max approaching) -> Purple (160, 32, 240)
+                    // rv = 0 (stable) -> LightGray (211, 211, 211)
+                    // rv = 1 (max receding) -> Red (255, 0, 0)
+                    
+                    Color waveColor;
+                    if (rvFactor > 0)
+                    {
+                        // Interpolate between LightGray and Red
+                        int r = (int)(211 + (255 - 211) * rvFactor);
+                        int gValue = (int)(211 - 211 * rvFactor);
+                        int b = (int)(211 - 211 * rvFactor);
+                        waveColor = Color.FromArgb(200, r, gValue, b);
+                    }
+                    else
+                    {
+                        // Interpolate between LightGray and Purple (160, 32, 240)
+                        float absFactor = Math.Abs(rvFactor);
+                        int r = (int)(211 + (160 - 211) * absFactor);
+                        int gValue = (int)(211 + (32 - 211) * absFactor);
+                        int b = (int)(211 + (240 - 211) * absFactor);
+                        waveColor = Color.FromArgb(200, r, gValue, b);
+                    }
 
                     using (Pen wavePen = new Pen(waveColor, 2))
                     {
@@ -182,7 +205,7 @@ namespace NatureOfCodeTest
             }
 
             // Orbit Path (Dashed)
-            float semiMajorPixels = (float)(engine.OrbitingPlanet.Orbit.SemiMajorAxis / PhysicalConstants.AU * scaleAUToPixels);
+            float semiMajorPixels = (float)(engine.OrbitingPlanet.Orbit.SemiMajorAxis / NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels);
             float c = semiMajorPixels * (float)engine.OrbitingPlanet.Orbit.Eccentricity;
             float ellipseCenterX = centerX - c;
             float ellipseCenterY = centerY;
@@ -197,8 +220,8 @@ namespace NatureOfCodeTest
 
             // Planet
             Vector2 pPos = engine.OrbitingPlanet.Position;
-            float pX = centerX + (pPos.X / (float)PhysicalConstants.AU * scaleAUToPixels);
-            float pY = centerY - (pPos.Y / (float)PhysicalConstants.AU * scaleAUToPixels);
+            float pX = centerX + (pPos.X / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels);
+            float pY = centerY - (pPos.Y / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels);
             float planetSize = 15;
             g.FillEllipse(Brushes.CornflowerBlue, pX - planetSize / 2, pY - planetSize / 2, planetSize, planetSize);
 
