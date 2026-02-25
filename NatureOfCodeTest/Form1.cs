@@ -23,8 +23,9 @@ namespace NatureOfCodeTest
         public Form1()
         {
             InitializeComponent();
-            this.DoubleBuffered = true;
-            
+            EnableDoubleBuffering();
+
+
             this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
             
             this.pnlOrbitalMap.Resize += (s, e) => this.pnlOrbitalMap.Invalidate();
@@ -66,14 +67,14 @@ namespace NatureOfCodeTest
             {
                 HostStar = sun,
                 OrbitingPlanet = earth,
-                TimeStep = 86400 // 1 day per step
+                TimeStep = 60*60*24 // 1 day per step
             };
         }
 
         private void InitializeTimer()
         {
             simulationTimer = new Timer();
-            simulationTimer.Interval = 100; 
+            simulationTimer.Interval = 240; 
             simulationTimer.Tick += SimulationTimer_Tick;
             simulationTimer.Start();
         }
@@ -231,12 +232,17 @@ namespace NatureOfCodeTest
                 g.DrawLine(radialPen, starX, starY, pX, pY);
             }
 
-            // Labels
+            // ----------------------- Labels (this is where need to be fix, turn it into a label to prevent)
             double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             string rvStr = $"Radial Velocity: {rv:F2} m/s";
             g.DrawString(timeStr, new Font("Arial", 12, FontStyle.Bold), Brushes.White, 10, 10);
             g.DrawString(rvStr, new Font("Arial", 10), Brushes.LightGray, 10, 35);
+        }
+
+        private void EnableDoubleBuffering()
+        {
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
         }
 
         private void btnShowRV_Click(object sender, EventArgs e)
