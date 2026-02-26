@@ -27,8 +27,9 @@ namespace NatureOfCodeTest
 
 
             this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
-            
+
             this.pnlOrbitalMap.Resize += (s, e) => this.pnlOrbitalMap.Invalidate();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -84,8 +85,6 @@ namespace NatureOfCodeTest
 
             engine.Step();
 
-
-            // Redraw orbital map
             pnlOrbitalMap.Invalidate();
 
             if (rvForm != null && !rvForm.IsDisposed && rvForm.Visible)
@@ -236,6 +235,7 @@ namespace NatureOfCodeTest
             double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             string rvStr = $"Radial Velocity: {rv:F2} m/s";
+            this.lblData.Text = timeStr + "\n" + rvStr;
             g.DrawString(timeStr, new Font("Arial", 12, FontStyle.Bold), Brushes.White, 10, 10);
             g.DrawString(rvStr, new Font("Arial", 10), Brushes.LightGray, 10, 35);
         }
