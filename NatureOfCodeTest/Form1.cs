@@ -19,7 +19,7 @@ namespace NatureOfCodeTest
         private RadialVelocityForm rvForm;
 
         private float scaleAUToPixels = 150f; // 1 AU = 150 pixels
-
+        // https://stackoverflow.com/questions/61261191/how-do-you-remove-the-flickering-in-the-paint-method
         public Form1()
         {
             InitializeComponent();
