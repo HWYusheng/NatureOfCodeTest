@@ -24,7 +24,9 @@ namespace NatureOfCodeTest
         {
             InitializeComponent();
             EnableDoubleBuffering();
-
+            this.lblData.Width = 50;
+            this.lblData.Height = 100;
+            this.lblData.ForeColor = Color.AntiqueWhite;
 
             this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
 
@@ -235,9 +237,7 @@ namespace NatureOfCodeTest
             double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             string rvStr = $"Radial Velocity: {rv:F2} m/s";
-            this.lblData.Text = timeStr + "\n" + rvStr;
-            g.DrawString(timeStr, new Font("Arial", 12, FontStyle.Bold), Brushes.White, 10, 10);
-            g.DrawString(rvStr, new Font("Arial", 10), Brushes.LightGray, 10, 35);
+            lblData.Text = timeStr + "\n" + rvStr;
         }
 
         private void EnableDoubleBuffering()
