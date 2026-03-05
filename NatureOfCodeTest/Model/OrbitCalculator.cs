@@ -15,32 +15,31 @@ namespace NatureOfCodeTest.Model
             // Logic tính toán vị trí dựa trên Keplerian Elements
             // 1. Tính Mean Anomaly -> Eccentric Anomaly -> True Anomaly
             // 2. Chuyển đổi sang tọa độ Descartes (X, Y)
+            // Calculate base on Keplerian Elements: 
+            // 1. Mean anomaly -> eccentric ano -> true ano
             var orbit = planet.Orbit;
 
-            // 1. Tính Mean Motion (n) - tốc độ góc trung bình (rad/s)
+            // 1. Calc Mean Motion (n) - ave angular speed (rad/s)
             // n = sqrt(G * (M_star + m_planet) / a^3)
             double totalMass = star.Mass + planet.Mass;
             double n = Math.Sqrt(PhysicalConstants.G * totalMass / Math.Pow(orbit.SemiMajorAxis, 3));
 
-            // 2. Tính Mean Anomaly (M) tại thời điểm 'time'
+            // 2. Mean Anomaly (M) at 'time'
             // M = M0 + n * (t - t0)
             double M = orbit.MeanAnomalyAtEpoch + n * (time - orbit.EpochTime);
             M = M % (2 * Math.PI); // Chuẩn hóa về [0, 2pi]
 
-            // 3. Giải phương trình Kepler để tìm Eccentric Anomaly (E)
-            // M = E - e * sin(E) -> Dùng KeplerSolver (Newton-Raphson)
+            // 3. Solve Kepler eq to find Eccentric Anomaly (E)
+            // M = E - e * sin(E) -> Use KeplerSolver (Newton-Raphson)
             double E = _solver.SolveEccentricAnomaly(M, orbit.Eccentricity);
 
-            // 4. Tính tọa độ trong mặt phẳng quỹ đạo (Orbital Plane)
-            // Giả sử mặt phẳng nằm trên hệ trục X', Y' với Ngoi Sao tại tiêu điểm
+            // 4. Calc coord on Orbital Plane
             double cosE = Math.Cos(E);
             double sinE = Math.Sin(E);
-
-            // Tọa độ X, Y trong mặt phẳng quỹ đạo (chu kỳ elip)
             double x_orbital = orbit.SemiMajorAxis * (cosE - orbit.Eccentricity);
             double y_orbital = orbit.SemiMajorAxis * Math.Sqrt(1 - Math.Pow(orbit.Eccentricity, 2)) * sinE;
 
-            // 5. Xoay tọa độ theo Argument of Periapsis (ω) và Inclination (i)
+            // 5. Rotate coord according to Argument of Periapsis (ω) and Inclination (i)
             // Đối với 2D đơn giản, chúng ta chủ yếu xoay theo ω (góc lệch của cận điểm quỹ đạo)
             double omega = orbit.ArgumentOfPeriapsis;
             double cosW = Math.Cos(omega);
@@ -49,7 +48,7 @@ namespace NatureOfCodeTest.Model
             double x_final = x_orbital * cosW - y_orbital * sinW;
             double y_final = x_orbital * sinW + y_orbital * cosW;
 
-            // 6. Cập nhật vị trí hành tinh (tương đối so với Sao chủ)
+            // 6. Update relative coord to the Star
             planet.Position = new Vector2((float)(star.Position.X + x_final), (float)(star.Position.Y + y_final));
 
             // 7. Tính vận tốc tức thời (Velocity) - Đạo hàm của vị trí

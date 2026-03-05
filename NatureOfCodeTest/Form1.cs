@@ -151,7 +151,7 @@ namespace NatureOfCodeTest
                     float y2 = starY + (float)(s2.RadialVelocity * amp);
                     
                     // Smooth Color Transition Logic: Purple (Negative/BlueShift) to Red (Positive/RedShift)
-                    // Let's normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
+                    // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
                     float rvFactor = (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
                     
                     // Color mapping: 
@@ -162,7 +162,7 @@ namespace NatureOfCodeTest
                     Color waveColor;
                     if (rvFactor > 0)
                     {
-                        // Interpolate between LightGray and Red
+                        // Change between LightGray and Red
                         int r = (int)(211 + (255 - 211) * rvFactor);
                         int gValue = (int)(211 - 211 * rvFactor);
                         int b = (int)(211 - 211 * rvFactor);
@@ -170,7 +170,7 @@ namespace NatureOfCodeTest
                     }
                     else
                     {
-                        // Interpolate between LightGray and Purple (160, 32, 240)
+                        // Change between LightGray and Purple
                         float absFactor = Math.Abs(rvFactor);
                         int r = (int)(211 + (160 - 211) * absFactor);
                         int gValue = (int)(211 + (32 - 211) * absFactor);
