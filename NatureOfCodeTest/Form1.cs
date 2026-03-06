@@ -124,7 +124,7 @@ namespace NatureOfCodeTest
             // Integrated RV Waveform Visualization (Traveling from Star to Observer)
             if (engine.Samples.Count > 1)
             {
-                int maxVisibleSamples = 200; // Increased for better interval visibility
+                int maxVisibleSamples = 400; // Increased to show ~1 full cycle (365 days)
                 int count = Math.Min(engine.Samples.Count, maxVisibleSamples);
                 
                 // We draw the most recent samples as a wave path
@@ -232,12 +232,17 @@ namespace NatureOfCodeTest
                 g.DrawLine(radialPen, starX, starY, pX, pY);
             }
 
-            // ----------------------- Labels (this is where need to be fix, turn it into a label to prevent)
+            // Labels
             double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             string rvStr = $"Radial Velocity: {rv:F2} m/s";
-            g.DrawString(timeStr, new Font("Arial", 12, FontStyle.Bold), Brushes.White, 10, 10);
-            g.DrawString(rvStr, new Font("Arial", 10), Brushes.LightGray, 10, 35);
+
+            using (Font timeFont = new Font("Arial", 12, FontStyle.Bold))
+            using (Font rvFont = new Font("Arial", 10))
+            {
+                g.DrawString(timeStr, timeFont, Brushes.White, 10, 10);
+                g.DrawString(rvStr, rvFont, Brushes.LightGray, 10, 35);
+            }
         }
 
         private void EnableDoubleBuffering()
