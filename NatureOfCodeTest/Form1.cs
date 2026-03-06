@@ -54,13 +54,13 @@ namespace NatureOfCodeTest
             NatureOfCodeTest.Model.Planet earth = new NatureOfCodeTest.Model.Planet
             {
                 Name = "Earth",
-                Mass = 5.972e24, // kg
+                Mass = 5.972e24, // in kg
                 Orbit = new NatureOfCodeTest.Model.OrbitalElements
                 {
                     SemiMajorAxis = NatureOfCodeTest.Model.PhysicalConstants.AU,
                     Eccentricity = 0.0167, // Earth's eccentricity
                     Inclination = 0,
-                    ArgumentOfPeriapsis = 0, // Simplified
+                    ArgumentOfPeriapsis = 0,
                     MeanAnomalyAtEpoch = 0,
                     EpochTime = 0
                 }
@@ -151,7 +151,7 @@ namespace NatureOfCodeTest
                     float y1 = starY + (float)(s1.RadialVelocity * amp);
                     float y2 = starY + (float)(s2.RadialVelocity * amp);
                     
-                    // Smooth Color Transition Logic: Purple (Negative/BlueShift) to Red (Positive/RedShift)
+                    // Color Transition Logic: Color of lightwave change from Purple (Negative/BlueShift) to Red (Positive/RedShift)
                     // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
                     float rvFactor = (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
                     
@@ -164,17 +164,17 @@ namespace NatureOfCodeTest
                     if (rvFactor > 0)
                     {
                         // Change between LightGray and Red
-                        int r = (int)(211 + (255 - 211) * rvFactor);
-                        int gValue = (int)(211 - 211 * rvFactor);
-                        int b = (int)(211 - 211 * rvFactor);
+                        int r = (int)(211 + (255 - 211) * 100 * rvFactor);
+                        int gValue = (int)(211 - 211 * 100 * rvFactor);
+                        int b = (int)(211 - 211 * 100 * rvFactor);
                         waveColor = Color.FromArgb(200, r, gValue, b);
                     }
                     else
                     {
                         // Change between LightGray and Purple
-                        float absFactor = Math.Abs(rvFactor);
-                        int r = (int)(211 + (160 - 211) * absFactor);
-                        int gValue = (int)(211 + (32 - 211) * absFactor);
+                        float absFactor = Math.Abs(100*rvFactor);
+                        int r = (int)(211 - (160 - 211) * absFactor);
+                        int gValue = (int)(211 - (32 - 211) * absFactor);
                         int b = (int)(211 + (240 - 211) * absFactor);
                         waveColor = Color.FromArgb(200, r, gValue, b);
                     }
@@ -191,7 +191,7 @@ namespace NatureOfCodeTest
             RectangleF sunRect = new RectangleF(starX - sunSize / 2, starY - sunSize / 2, sunSize, sunSize);
             g.FillEllipse(Brushes.Gold, sunRect);
 
-            // CROSSHAIRS: Different for Star and Barycenter
+            // CROSSHAIRS: Different for Star and Barycenter. For showing how the star fluctuate
             // 1. Star Crosshair (Yellow)
             using (Pen starCrossPen = new Pen(Color.Red, 1))
             {
