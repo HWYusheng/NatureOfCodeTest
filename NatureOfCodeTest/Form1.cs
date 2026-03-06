@@ -155,7 +155,7 @@ namespace NatureOfCodeTest
                     // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
                     float rvFactor = (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
                     
-                    // Color mapping: 
+                    // Color mapping: Need to rethink
                     // rv = -1 (max approaching) -> Purple (160, 32, 240)
                     // rv = 0 (stable) -> Green (0, 255, 0)
                     // rv = 1 (max receding) -> Red (255, 0, 0)
