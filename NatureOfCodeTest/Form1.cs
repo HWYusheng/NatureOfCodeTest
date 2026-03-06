@@ -151,6 +151,7 @@ namespace NatureOfCodeTest
                     float y1 = starY + (float)(s1.RadialVelocity * amp);
                     float y2 = starY + (float)(s2.RadialVelocity * amp);
                     
+                    // Calculate the distance from the crosshair to a certain point, then use it to replicate the doppler shiftd
                     // Color Transition Logic: Color of lightwave change from Purple (Negative/BlueShift) to Green to Red (Positive/RedShift)
                     // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
                     float rvFactor = 100 * (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
