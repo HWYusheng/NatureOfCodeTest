@@ -19,16 +19,19 @@ namespace NatureOfCodeTest
         private RadialVelocityForm rvForm;
 
         private float scaleAUToPixels = 150f; // 1 AU = 150 pixels
-
+        // https://stackoverflow.com/questions/61261191/how-do-you-remove-the-flickering-in-the-paint-method
         public Form1()
         {
             InitializeComponent();
             EnableDoubleBuffering();
-
+            this.lblData.Width = 50;
+            this.lblData.Height = 100;
+            this.lblData.ForeColor = Color.AntiqueWhite;
 
             this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
-            
+
             this.pnlOrbitalMap.Resize += (s, e) => this.pnlOrbitalMap.Invalidate();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -84,8 +87,6 @@ namespace NatureOfCodeTest
 
             engine.Step();
 
-
-            // Redraw orbital map
             pnlOrbitalMap.Invalidate();
 
             if (rvForm != null && !rvForm.IsDisposed && rvForm.Visible)
@@ -124,7 +125,7 @@ namespace NatureOfCodeTest
             // Integrated RV Waveform Visualization (Traveling from Star to Observer)
             if (engine.Samples.Count > 1)
             {
-                int maxVisibleSamples = 400; // Increased to show ~1 full cycle (365 days)
+                int maxVisibleSamples = 200; // Increased for better interval visibility
                 int count = Math.Min(engine.Samples.Count, maxVisibleSamples);
                 
                 // We draw the most recent samples as a wave path
@@ -150,7 +151,7 @@ namespace NatureOfCodeTest
                     float y2 = starY + (float)(s2.RadialVelocity * amp);
                     
                     // Smooth Color Transition Logic: Purple (Negative/BlueShift) to Red (Positive/RedShift)
-                    // Let's normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
+                    // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
                     float rvFactor = (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
                     
                     // Color mapping: 
@@ -161,7 +162,7 @@ namespace NatureOfCodeTest
                     Color waveColor;
                     if (rvFactor > 0)
                     {
-                        // Interpolate between LightGray and Red
+                        // Change between LightGray and Red
                         int r = (int)(211 + (255 - 211) * rvFactor);
                         int gValue = (int)(211 - 211 * rvFactor);
                         int b = (int)(211 - 211 * rvFactor);
@@ -169,7 +170,7 @@ namespace NatureOfCodeTest
                     }
                     else
                     {
-                        // Interpolate between LightGray and Purple (160, 32, 240)
+                        // Change between LightGray and Purple
                         float absFactor = Math.Abs(rvFactor);
                         int r = (int)(211 + (160 - 211) * absFactor);
                         int gValue = (int)(211 + (32 - 211) * absFactor);
@@ -232,17 +233,11 @@ namespace NatureOfCodeTest
                 g.DrawLine(radialPen, starX, starY, pX, pY);
             }
 
-            // Labels
+            // ----------------------- Labels (this is where need to be fix, turn it into a label to prevent)
             double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             string rvStr = $"Radial Velocity: {rv:F2} m/s";
-
-            using (Font timeFont = new Font("Arial", 12, FontStyle.Bold))
-            using (Font rvFont = new Font("Arial", 10))
-            {
-                g.DrawString(timeStr, timeFont, Brushes.White, 10, 10);
-                g.DrawString(rvStr, rvFont, Brushes.LightGray, 10, 35);
-            }
+            lblData.Text = timeStr + "\n" + rvStr;
         }
 
         private void EnableDoubleBuffering()
