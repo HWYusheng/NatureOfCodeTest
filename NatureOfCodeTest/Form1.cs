@@ -151,7 +151,7 @@ namespace NatureOfCodeTest
                     float y1 = starY + (float)(s1.RadialVelocity * amp);
                     float y2 = starY + (float)(s2.RadialVelocity * amp);
                     
-                    // Color Transition Logic: Color of lightwave change from Purple (Negative/BlueShift) to Red (Positive/RedShift)
+                    // Color Transition Logic: Color of lightwave change from Purple (Negative/BlueShift) to Green to Red (Positive/RedShift)
                     // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
                     float rvFactor = (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
                     
@@ -164,7 +164,7 @@ namespace NatureOfCodeTest
                     if (rvFactor > 0)
                     {
                         // Change between Green and Red
-                        int r = (int)(255 + (255 - 211) * 100 * rvFactor);
+                        int r = (int)(255 - (255 - 211) * 100 * rvFactor);
                         int gValue = (int)(255 - 255 * 100 * rvFactor);
                         int b = (int)(255 - 255 * 100 * rvFactor);
                         waveColor = Color.FromArgb(200, r, gValue, b);
