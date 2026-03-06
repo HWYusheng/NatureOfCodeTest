@@ -157,25 +157,25 @@ namespace NatureOfCodeTest
                     
                     // Color mapping: 
                     // rv = -1 (max approaching) -> Purple (160, 32, 240)
-                    // rv = 0 (stable) -> LightGray (211, 211, 211)
+                    // rv = 0 (stable) -> Green (0, 255, 0)
                     // rv = 1 (max receding) -> Red (255, 0, 0)
                     
                     Color waveColor;
                     if (rvFactor > 0)
                     {
-                        // Change between LightGray and Red
-                        int r = (int)(211 + (255 - 211) * 100 * rvFactor);
-                        int gValue = (int)(211 - 211 * 100 * rvFactor);
-                        int b = (int)(211 - 211 * 100 * rvFactor);
+                        // Change between Green and Red
+                        int r = (int)(255 + (255 - 211) * 100 * rvFactor);
+                        int gValue = (int)(255 - 255 * 100 * rvFactor);
+                        int b = (int)(255 - 255 * 100 * rvFactor);
                         waveColor = Color.FromArgb(200, r, gValue, b);
                     }
                     else
                     {
-                        // Change between LightGray and Purple
-                        float absFactor = Math.Abs(100*rvFactor);
-                        int r = (int)(211 - (160 - 211) * absFactor);
-                        int gValue = (int)(211 - (32 - 211) * absFactor);
-                        int b = (int)(211 + (240 - 211) * absFactor);
+                        // Change between Green and Purple
+                        float absFactor = Math.Abs(5000*rvFactor);
+                        int r = (int)(255 + (160 - 255) * absFactor);
+                        int gValue = (int)(255 + (32 - 255) * absFactor);
+                        int b = (int)(255 + (240 - 255) * absFactor);
                         waveColor = Color.FromArgb(200, r, gValue, b);
                     }
 
