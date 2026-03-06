@@ -153,7 +153,7 @@ namespace NatureOfCodeTest
                     
                     // Color Transition Logic: Color of lightwave change from Purple (Negative/BlueShift) to Green to Red (Positive/RedShift)
                     // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
-                    float rvFactor = (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
+                    float rvFactor = 100 * (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
                     
                     // Color mapping: Need to rethink
                     // rv = -1 (max approaching) -> Purple (160, 32, 240)
@@ -164,15 +164,15 @@ namespace NatureOfCodeTest
                     if (rvFactor > 0)
                     {
                         // Change between Green and Red
-                        int r = (int)(255 - (255 - 211) * 100 * rvFactor);
-                        int gValue = (int)(255 - 255 * 100 * rvFactor);
-                        int b = (int)(255 - 255 * 100 * rvFactor);
+                        int r = (int)(255 - (255 - 211) * rvFactor);
+                        int gValue = (int)(255 - 255 * rvFactor);
+                        int b = (int)(255 - 255 * rvFactor);
                         waveColor = Color.FromArgb(200, r, gValue, b);
                     }
                     else
                     {
                         // Change between Green and Purple
-                        float absFactor = Math.Abs(5000*rvFactor);
+                        float absFactor = Math.Abs(rvFactor);
                         int r = (int)(255 + (160 - 255) * absFactor);
                         int gValue = (int)(255 + (32 - 255) * absFactor);
                         int b = (int)(255 + (240 - 255) * absFactor);
