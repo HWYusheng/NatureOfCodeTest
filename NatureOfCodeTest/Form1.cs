@@ -103,6 +103,7 @@ namespace NatureOfCodeTest
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
+            // Width and height of the Map
             int w = pnlOrbitalMap.Width;
             int h = pnlOrbitalMap.Height;
             
