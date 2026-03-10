@@ -143,6 +143,7 @@ namespace NatureOfCodeTest
                 float amplitude = 40f;
 
                 // Color mapping
+                // One possible error to be fixed, the doppler shift visualisation didn't work as intended
                 Color waveColor;
                 if (rvFactor > 0)
                 {
