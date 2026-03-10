@@ -18,7 +18,7 @@ namespace NatureOfCodeTest
         private Timer simulationTimer;
         private RadialVelocityForm rvForm;
 
-        private float scaleAUToPixels = 150f; // 1 AU = 150 pixels
+        private float scaleAUToPixels = 300f; // 1 AU = 300 pixels (Increased from 150)
 
         // https://stackoverflow.com/questions/61261191/how-do-you-remove-the-flickering-in-the-paint-method
         public Form1()
@@ -107,11 +107,11 @@ namespace NatureOfCodeTest
             int h = pnlOrbitalMap.Height;
             
             // Shift system slight toward the right
-            float centerX = w * 0.65f; 
+            float centerX = w * 0.75f; 
             float centerY = h / 2f;
 
             // Wobble Amplification for modeling purposes
-            float wobbleAmplify = 4000f; 
+            float wobbleAmplify = 12000f; // Increased for better visibility
             Vector2 starPos = engine.HostStar.Position;
             float starX = centerX + (starPos.X / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
             float starY = centerY - (starPos.Y / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
@@ -123,72 +123,73 @@ namespace NatureOfCodeTest
             g.FillEllipse(Brushes.Silver, observerX - 25, observerY - 8, 10, 16); // Lens
             g.DrawString("OBSERVER\n(Telescope)", this.Font, Brushes.LightSkyBlue, observerX - 30, observerY + 15);
 
-            // Integrated RV Waveform Visualization (Traveling from Star to Observer)
-            if (engine.Samples.Count > 1)
+            // Light Wave Visualization (Static Sine Wave Link)
+            if (engine.Samples.Count > 0)
             {
-                int maxVisibleSamples = 200; // Increased for better interval visibility
-                int count = Math.Min(engine.Samples.Count, maxVisibleSamples);
-                
-                // We draw the most recent samples as a wave path
-                for (int i = 1; i < count; i++)
+                var latestSample = engine.Samples.Last();
+                double currentRV = latestSample.RadialVelocity;
+
+                // Find max RV for normalization (using historical max or fixed scale)
+                float maxRV_Abs = (float)engine.Samples.Max(s => Math.Abs(s.RadialVelocity));
+                if (maxRV_Abs < 1e-9) maxRV_Abs = 1.0f;
+
+                float rvFactor = (float)(currentRV / maxRV_Abs);
+
+                // Wave Properties
+                float baseWavelength = 40f; 
+                // Wavelength changes with RV (Doppler effect)
+                // Positive RV (receding) -> Longer wavelength (Redshift)
+                // Negative RV (approaching) -> Shorter wavelength (Blueshift)
+                float currentWavelength = baseWavelength * (1.0f + rvFactor * 0.5f); 
+                float amplitude = 40f;
+
+                // Color mapping
+                Color waveColor;
+                if (rvFactor > 0)
                 {
-                    int idx1 = engine.Samples.Count - i;
-                    int idx2 = engine.Samples.Count - (i + 1);
-                    
-                    var s1 = engine.Samples[idx1];
-                    var s2 = engine.Samples[idx2];
-                    
-                    // Map samples along the distance from starX to observerX
-                    float distTotal = starX - observerX;
-                    float progress1 = (float)i / maxVisibleSamples;
-                    float progress2 = (float)(i + 1) / maxVisibleSamples;
-                    
-                    float x1 = starX - progress1 * distTotal;
-                    float x2 = starX - progress2 * distTotal;
-                    
-                    // Vertical displacement proportional to RV
-                    float amp = 0.5f; 
-                    float y1 = starY + (float)(s1.RadialVelocity * amp);
-                    float y2 = starY + (float)(s2.RadialVelocity * amp);
-                    
-                    // Calculate the distance from the crosshair to a certain point, then use it to replicate the doppler shiftd
-                    // Color Transition Logic: Color of lightwave change from Purple (Negative/BlueShift) to Green to Red (Positive/RedShift)
-                    // Normalize RV. Around -100 to 100 m/s usually, but let's use a scale factor.
-                    float rvFactor = 100 * (float)Math.Max(-1, Math.Min(1, s1.RadialVelocity / 50.0)); // Clamp -1 to 1
-                    
-                    // Color mapping: Need to rethink
-                    // rv = -1 (max approaching) -> Purple (160, 32, 240)
-                    // rv = 0 (stable) -> Green (0, 255, 0)
-                    // rv = 1 (max receding) -> Red (255, 0, 0)
-                    
-                    Color waveColor;
-                    if (rvFactor > 0)
+                    // Green to Red
+                    int r = (int)(255 * rvFactor);
+                    int gValue = (int)(255 * (1 - rvFactor));
+                    waveColor = Color.FromArgb(200, r, gValue, 0);
+                }
+                else
+                {
+                    // Green to Purple
+                    float absFactor = Math.Abs(rvFactor);
+                    int r = (int)(160 * absFactor);
+                    int gValue = (int)(255 * (1 - absFactor) + 32 * absFactor);
+                    int bValue = (int)(240 * absFactor);
+                    waveColor = Color.FromArgb(200, r, gValue, bValue);
+                }
+
+                // Draw the wave from star to observer
+                float distTotal = starX - observerX;
+                int segments = (int)distTotal / 2; // 2-pixel steps
+                if (segments > 0)
+                {
+                    PointF[] wavePoints = new PointF[segments + 1];
+                    for (int i = 0; i <= segments; i++)
                     {
-                        // Change between Green and Red
-                        int r = (int)(255 - (255 - 211) * rvFactor);
-                        int gValue = (int)(255 - 255 * rvFactor);
-                        int b = (int)(255 - 255 * rvFactor);
-                        waveColor = Color.FromArgb(200, r, gValue, b);
-                    }
-                    else
-                    {
-                        // Change between Green and Purple
-                        float absFactor = Math.Abs(rvFactor);
-                        int r = (int)(255 + (160 - 255) * absFactor);
-                        int gValue = (int)(255 + (32 - 255) * absFactor);
-                        int b = (int)(255 + (240 - 255) * absFactor);
-                        waveColor = Color.FromArgb(200, r, gValue, b);
+                        float progress = (float)i / segments;
+                        float x = starX - (progress * distTotal);
+                        
+                        // Sine wave math: y = sin(2*pi * x / wavelength)
+                        // Using progress * distTotal as the local x-offset from the star
+                        float localX = progress * distTotal;
+                        float yOffset = (float)(amplitude * Math.Sin(2 * Math.PI * localX / currentWavelength));
+                        
+                        wavePoints[i] = new PointF(x, starY + yOffset);
                     }
 
-                    using (Pen wavePen = new Pen(waveColor, 2))
+                    using (Pen wavePen = new Pen(waveColor, 3))
                     {
-                        g.DrawLine(wavePen, x1, y1, x2, y2);
+                        g.DrawLines(wavePen, wavePoints);
                     }
                 }
             }
 
             // Draw Star (Sun)
-            float sunSize = 40;
+            float sunSize = 200;
             RectangleF sunRect = new RectangleF(starX - sunSize / 2, starY - sunSize / 2, sunSize, sunSize);
             g.FillEllipse(Brushes.Gold, sunRect);
 
