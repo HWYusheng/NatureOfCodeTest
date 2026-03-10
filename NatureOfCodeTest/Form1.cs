@@ -106,12 +106,11 @@ namespace NatureOfCodeTest
             int w = pnlOrbitalMap.Width;
             int h = pnlOrbitalMap.Height;
             
-            // Shift system slight toward the right
             float centerX = w * 0.75f; 
             float centerY = h / 2f;
 
-            // Wobble Amplification for modeling purposes
-            float wobbleAmplify = 12000f; // Increased for better visibility
+            // Wobble Amp for modeling purposes
+            float wobbleAmplify = 12000f;
             Vector2 starPos = engine.HostStar.Position;
             float starX = centerX + (starPos.X / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
             float starY = centerY - (starPos.Y / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
@@ -173,7 +172,7 @@ namespace NatureOfCodeTest
                         float progress = (float)i / segments;
                         float x = starX - (progress * distTotal);
                         
-                        // Sine wave math: y = sin(2*pi * x / wavelength)
+                        // Sine wave function: y = sin(2*pi * frequnecy / wavelength)
                         // Using progress * distTotal as the local x-offset from the star
                         float localX = progress * distTotal;
                         float yOffset = (float)(amplitude * Math.Sin(2 * Math.PI * localX / currentWavelength));
