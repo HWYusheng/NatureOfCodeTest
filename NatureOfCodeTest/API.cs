@@ -18,7 +18,7 @@ namespace NatureOfCodeTest
         private const string URL = "https://api.openweathermap.org/data/2.5/weather?q=Southampton,uk&appid=8316724b67d895ab2649049167efaf76";
         //private const string URL = "http://api.wunderground.com/api/4d8a9c758fdb28de/conditions/q/Geneva.json";
         private const string DATA = @"{""object"":{""name"":""Name""}}";
-        private async void Form1_Load(object sender, EventArgs e)
+        private async void Token()
         {
             string returnedData = await GetDataAsync(URL);
             var weather = JsonSerializer.Deserialize<Root>(returnedData);
