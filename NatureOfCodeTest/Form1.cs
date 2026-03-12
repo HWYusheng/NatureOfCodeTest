@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,6 +17,8 @@ namespace NatureOfCodeTest
         private NatureOfCodeTest.Model.SimulationEngine engine;
         private Timer simulationTimer;
         private RadialVelocityForm rvForm;
+        private DistanceForm distanceForm;
+        private float wavePhase = 0f; // For wave animation
 
         private float scaleAUToPixels = 300f; // 1 AU = 300 pixels (Increased from 150)
 
@@ -71,7 +73,7 @@ namespace NatureOfCodeTest
             {
                 HostStar = sun,
                 OrbitingPlanet = earth,
-                TimeStep = 60*60*24 // 1 day per step
+                TimeStep = trkSpeed.Value * 8640.0 // Sync with UI
             };
         }
 
@@ -87,12 +89,17 @@ namespace NatureOfCodeTest
         {
 
             engine.Step();
-
+            wavePhase += 1.5f; // Update animation phase
             pnlOrbitalMap.Invalidate();
 
             if (rvForm != null && !rvForm.IsDisposed && rvForm.Visible)
             {
                 rvForm.Redraw();
+            }
+
+            if (distanceForm != null && !distanceForm.IsDisposed && distanceForm.Visible)
+            {
+                distanceForm.Redraw();
             }
         }
 
@@ -123,49 +130,21 @@ namespace NatureOfCodeTest
             g.FillEllipse(Brushes.Silver, observerX - 25, observerY - 8, 10, 16); // Lens
             g.DrawString("OBSERVER\n(Telescope)", this.Font, Brushes.LightSkyBlue, observerX - 30, observerY + 15);
 
-            // Light Wave Visualization (Static Sine Wave Link)
+            // Light Wave Visualization (Unified Sine Wave based on current RV)
             if (engine.Samples.Count > 0)
             {
-                var latestSample = engine.Samples.Last();
-                double currentRV = latestSample.RadialVelocity;
-
-                // Find max RV for normalization (using historical max or fixed scale)
-                float maxRV_Abs = (float)engine.Samples.Max(s => Math.Abs(s.RadialVelocity));
-                if (maxRV_Abs < 1e-9) maxRV_Abs = 1.0f;
-
-                float rvFactor = (float)(currentRV / maxRV_Abs);
-
-                // Wave Properties
-                float baseWavelength = 40f; 
-                // Wavelength changes with RV (Doppler effect)
-                // Positive RV (receding) -> Longer wavelength (Redshift)
-                // Negative RV (approaching) -> Shorter wavelength (Blueshift)
-                float currentWavelength = baseWavelength * (1.0f + rvFactor * 0.5f); 
+                double currentRV = engine.Samples.Last().RadialVelocity;
+                
+                // Frequency and Color shift based on RV
+                double shiftedWavelength = ColorUtils.GetShiftedWavelength(currentRV);
+                Color waveColor = ColorUtils.WavelengthToRGB(shiftedWavelength);
+                
+                float baseVisualPeriod = 40f; 
+                float currentVisualPeriod = (float)(baseVisualPeriod * (shiftedWavelength / ColorUtils.BaseWavelengthNM)); 
                 float amplitude = 40f;
 
-                // Color mapping
-                // One possible error to be fixed, the doppler shift visualisation didn't work as intended. Thought to be okay at first, but after several cycle, turn out to be not ok.
-                Color waveColor;
-                if (rvFactor > 0)
-                {
-                    // Green to Red
-                    int r = (int)(255 * rvFactor);
-                    int gValue = (int)(255 * (1 - rvFactor));
-                    waveColor = Color.FromArgb(200, r, gValue, 0);
-                }
-                else
-                {
-                    // Green to Purple
-                    float absFactor = Math.Abs(rvFactor);
-                    int r = (int)(160 * absFactor);
-                    int gValue = (int)(255 * (1 - absFactor) + 32 * absFactor);
-                    int bValue = (int)(240 * absFactor);
-                    waveColor = Color.FromArgb(200, r, gValue, bValue);
-                }
-
-                // Draw the wave from star to observer
                 float distTotal = starX - observerX;
-                int segments = (int)distTotal / 2; // 2-pixel steps
+                int segments = (int)distTotal / 2;
                 if (segments > 0)
                 {
                     PointF[] wavePoints = new PointF[segments + 1];
@@ -173,12 +152,10 @@ namespace NatureOfCodeTest
                     {
                         float progress = (float)i / segments;
                         float x = starX - (progress * distTotal);
-                        
-                        // Sine wave function: y = sin(2*pi * frequnecy / wavelength)
-                        // Using progress * distTotal as the local x-offset from the star
                         float localX = progress * distTotal;
-                        float yOffset = (float)(amplitude * Math.Sin(2 * Math.PI * localX / currentWavelength));
                         
+                        double phase = (2 * Math.PI * localX / currentVisualPeriod) + wavePhase;
+                        float yOffset = (float)(amplitude * Math.Sin(phase));
                         wavePoints[i] = new PointF(x, starY + yOffset);
                     }
 
@@ -231,18 +208,16 @@ namespace NatureOfCodeTest
             float planetSize = 15;
             g.FillEllipse(Brushes.CornflowerBlue, pX - planetSize / 2, pY - planetSize / 2, planetSize, planetSize);
 
-            // Radial line
-            using (Pen radialPen = new Pen(Color.FromArgb(40, Color.Lime), 1))
-            {
-                g.DrawLine(radialPen, starX, starY, pX, pY);
-            }
+                    using (Pen radialPen = new Pen(Color.Red, 1))
+                    {
+                        g.DrawLine(radialPen, starX, starY, pX, pY);
+                    }
 
             double rv = engine.Samples.Count > 0 ? engine.Samples.Last().RadialVelocity : 0;
             string timeStr = $"Day: {engine.CurrentTime / 86400.0:F1}";
             string rvStr = $"Radial Velocity: {rv:F2} m/s";
             lblData.Text = timeStr + "\n" + rvStr;
         }
-
         private void EnableDoubleBuffering()
         {
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -254,11 +229,37 @@ namespace NatureOfCodeTest
             {
                 rvForm = new RadialVelocityForm();
                 rvForm.Data = engine.Samples;
+                rvForm.Owner = this; // Set owner to main form
                 rvForm.Show();
             }
             else
             {
                 rvForm.BringToFront();
+            }
+        }
+
+        private void btnShowDistance_Click(object sender, EventArgs e)
+        {
+            if (distanceForm == null || distanceForm.IsDisposed)
+            {
+                distanceForm = new DistanceForm();
+                distanceForm.Data = engine.Samples;
+                distanceForm.Owner = this; // Set owner to main form
+                distanceForm.Show();
+            }
+            else
+            {
+                distanceForm.BringToFront();
+            }
+        }
+
+        private void trkSpeed_Scroll(object sender, EventArgs e)
+        {
+            if (engine != null)
+            {
+                // Range: 1-50, maps to 0.1 to 5.0 days per step
+                engine.TimeStep = trkSpeed.Value * 8640.0;
+                lblSpeed.Text = $"Simulation Speed: {trkSpeed.Value * 0.1:F1} Days/Step";
             }
         }
     }

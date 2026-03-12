@@ -66,8 +66,9 @@ namespace NatureOfCodeTest.Model
 
         public Vector2 ComputeStarReflexMotion(Planet p, Star s)
         {
-            // Calc the wobble of the Star caused by the planet pull
-            double ratio = p.Mass / s.Mass;
+            // Exact calculation: v_star = -v_rel * (m_p / (M_s + m_p))
+            double totalMass = s.Mass + p.Mass;
+            double ratio = p.Mass / totalMass;
             return Vector2.Multiply((float)(-ratio), p.Velocity);
         }
     }

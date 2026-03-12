@@ -16,7 +16,6 @@ namespace NatureOfCodeTest
             InitializeComponent();
             this.DoubleBuffered = true;
             this.pnlRVGraph.Paint += PnlRVGraph_Paint;
-            // Enable resizing redraw
             this.pnlRVGraph.Resize += (s, e) => this.pnlRVGraph.Invalidate();
         }
 
@@ -54,28 +53,24 @@ namespace NatureOfCodeTest
             g.DrawLine(axisPen, marginLeft, marginTop, marginLeft, h - marginBottom); // Y Axis
             g.DrawLine(axisPen, marginLeft, h - marginBottom, w - marginRight, h - marginBottom); // X Axis
 
-            // Determine scales
-            // We want to show a moving window or the whole history? 
-            // Let's show the whole history for now, up to a limit, or auto-scale.
-            // For educational purposes, seeing the whole sine wave develop is nice.
-            
-            // Determine scales
-            // Use a fixed time window for scrolling
-            double windowSize = 365 * 86400.0; // Show last 1 year of data
+            // Determine scales using TrackBars
+            double windowSize = trkXScale.Value * 86400.0; // Show window size from TrackBar
             double maxTime = Data[Data.Count - 1].Time;
             double minTime = Math.Max(Data[0].Time, maxTime - windowSize);
             
             // X-axis min label should follow scrolling
             float displayMinTime = (float)minTime;
 
-            // Velocity range: find max absolute value to keep 0 in center
-            // We'll scan the whole data for maxVel to keep the Y-scale stable, or just the window?
-            // Stable Y-scale is usually better for comparison.
-            double maxVel = Data.Select(d => Math.Abs(d.RadialVelocity)).Max();
-            if (maxVel < 1) maxVel = 1; 
-            maxVel *= 1.1; 
+            // Velocity range: use TrackBar for scaling (1 to 1000)
+            // trkYScale value 100 = 100% of auto-calculated maxVel
+            // We'll use it to multiply the base auto-scale or just use it as a divisor
+            double baseMaxVel = Data.Select(d => Math.Abs(d.RadialVelocity)).Max();
+            if (baseMaxVel < 1e-3) baseMaxVel = 1e-3; // Avoid div by zero
+            
+            // Map trkYScale (1-1000) to a range (e.g. 0.01 to 10.0 x baseMaxVel)
+            // But user might want absolute control. Let's just make it a multiplier for a "standard" range.
+            double maxVel = (baseMaxVel * 1.5) * (100.0 / trkYScale.Value); 
 
-            // Coordinate mapping functions
             float MapX(double t)
             {
                 if (t < minTime) return -1000; // Off screen
@@ -108,24 +103,9 @@ namespace NatureOfCodeTest
                     double rvEnd = Data[i].RadialVelocity;
                     double avgRV = (rvStart + rvEnd) / 2.0;
 
-                    // Smooth Color Transition Logic (Purple to Red)
-                    float rvFactor = (float)Math.Max(-1, Math.Min(1, avgRV / 50.0));
-                    Color segmentColor;
-                    if (rvFactor > 0)
-                    {
-                        int r = (int)(211 + (255 - 211) * rvFactor);
-                        int gValue = (int)(211 - 211 * rvFactor);
-                        int b = (int)(211 - 211 * rvFactor);
-                        segmentColor = Color.FromArgb(255, r, gValue, b);
-                    }
-                    else
-                    {
-                        float absFactor = Math.Abs(rvFactor);
-                        int r = (int)(211 + (160 - 211) * absFactor);
-                        int gValue = (int)(211 + (32 - 211) * absFactor);
-                        int b = (int)(211 + (240 - 211) * absFactor);
-                        segmentColor = Color.FromArgb(255, r, gValue, b);
-                    }
+                    // Same color occillation as Doppler shift visulisation 
+                    double wavelength = ColorUtils.GetShiftedWavelength(avgRV);
+                    Color segmentColor = ColorUtils.WavelengthToRGB(wavelength, 255);
 
                     using (Pen segmentPen = new Pen(segmentColor, 2))
                     {
@@ -149,31 +129,36 @@ namespace NatureOfCodeTest
                     }
                 }
 
-                // Highlight current point
+                // Highlight current drawing point
                 PointF lastPoint = new PointF(MapX(Data[Data.Count - 1].Time), MapY(Data[Data.Count - 1].RadialVelocity));
                 g.FillEllipse(Brushes.White, lastPoint.X - 3, lastPoint.Y - 3, 6, 6);
                 
-                // Doppler shift explanation
+                double currentRV = Data[Data.Count - 1].RadialVelocity;
+                double textWavelength = ColorUtils.GetShiftedWavelength(currentRV);
                 string shiftText = "";
-                Color shiftColor = Color.White;
-                double currentRV = Data[Data.Count-1].RadialVelocity;
+                Color shiftColor = ColorUtils.WavelengthToRGB(textWavelength, 255);
                 
-                if (currentRV > 1) { shiftText = "REDSHIFT (Receding)"; shiftColor = Color.LightCoral; }
-                else if (currentRV < -1) { shiftText = "PURPLESHIFT (Approaching)"; shiftColor = Color.Plum; }
+                if (currentRV > 1) { shiftText = "REDSHIFT (Receding)"; }
+                else if (currentRV < -1) { shiftText = "BLUE/VIOLET SHIFT (Approaching)"; }
                 else { shiftText = "STABLE"; shiftColor = Color.Gray; }
 
                 g.DrawString(shiftText, new Font("Arial", 10, FontStyle.Bold), new SolidBrush(shiftColor), w - 250, marginTop);
             }
 
-            // Draw Labels (Simple)
             Font font = new Font("Arial", 8); 
             Brush brush = Brushes.White;
-            g.DrawString($"RV Max: {maxVel:F2} m/s", font, brush, 5, marginTop);
-            g.DrawString($"RV Min: {-maxVel:F2} m/s", font, brush, 5, h - marginBottom - 15);
-            g.DrawString($"Time: {(maxTime - minTime)/86400.0:F1} days", font, brush, w - 100, h - 20);
+            g.DrawString($"RV Max (visible): {maxVel:F2} m/s", font, brush, 5, marginTop);
+            g.DrawString($"RV Min (visible): {-maxVel:F2} m/s", font, brush, 5, h - marginBottom - 15);
+            g.DrawString($"Time Window: {trkXScale.Value} days", font, brush, w - 150, h - 20);
             
-            // Explanation of detection
-            g.DrawString("Star's wobble causes Doppler shift in light spectrum", font, Brushes.Gray, marginLeft, 5);
+            g.DrawString("Star's wobble causes Doppler shift in light spectrum. Adjust sliders below to scale.", font, Brushes.Gray, marginLeft, 5);
+        }
+
+        private void trkScale_Scroll(object sender, EventArgs e)
+        {
+            lblXScale.Text = $"X-Axis Scale: {trkXScale.Value} Days";
+            lblYScale.Text = $"Y-Axis Zoom: {trkYScale.Value}%";
+            pnlRVGraph.Invalidate();
         }
     }
 }
