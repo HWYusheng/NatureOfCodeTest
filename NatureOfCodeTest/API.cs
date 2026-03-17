@@ -17,11 +17,13 @@ namespace NatureOfCodeTest
     {
         private const string URL = "https://api.openweathermap.org/data/2.5/weather?q=Southampton,uk&appid=8316724b67d895ab2649049167efaf76";
         //private const string URL = "http://api.wunderground.com/api/4d8a9c758fdb28de/conditions/q/Geneva.json";
+        private const string PlanetURL = "exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+top+50+hostname,pl_name,pl_masse,pl_orbsmax,pl_orbeccen,pl_orbincl,pl_orblper+from+ps+where+pl_rade+<+=+1.8+and+pl_masse+>+0+and+rv_flag=1+and+pl_orbsmax+is+not+null+and+pl_orbeccen+is+not+null+and+pl_orbincl+is+not+null+and+pl_orblper+is+not+null&format=json";
+        private const string StarURL = "exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+top+50+hostname,st_mass,st_lum+from+stellarhosts+where+st_mass+is+not+null+and+st_lum+is+not+null&format=json";
         private const string DATA = @"{""object"":{""name"":""Name""}}";
         private async void Token()
         {
             string returnedData = await GetDataAsync(URL);
-            var weather = JsonSerializer.Deserialize<Root>(returnedData);
+            var weather = JsonSerializer.Deserialize<List<List<Planet>>(returnedData);
         }
         private async Task<string> GetDataAsync(string url)
         {
@@ -43,6 +45,21 @@ namespace NatureOfCodeTest
         }
         //pasted json string to json2csharp
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+        public class PlanetFJson
+        {
+            public string Name { get; set; }
+            public double Mass { get; set; }
+            public double SemiMajorAxis { get; set; } // a
+            public double Eccentricity { get; set; }  // e
+            public double Inclination { get; set; }   // i (độ)
+            public double ArgumentOfPeriapsis { get; set; } // ω
+        }
+        public class StarFJson
+        {
+            public string Name { get; set; }
+            public double Mass { get; set; }
+            public double Luminosity { get; set; }
+        }
         public class Clouds
         {
             public int all { get; set; }
