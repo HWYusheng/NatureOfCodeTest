@@ -49,17 +49,19 @@ namespace NatureOfCodeTest
         {
             public string HostName { get; set; }
             public string pl_Name { get; set; }
-            public double pl_Masse { get; set; }
-            public double pl_orbsmax { get; set; } // a
-            public double pl_orbeccen { get; set; }  // e
-            public double pl_orbincl { get; set; }   // i (degrees)
-            public double pl_orblper { get; set; } // ω
+            public double pl_Masse { get; set; } // planet mass
+            public double pl_orbsmax { get; set; } // a - planet SemiMajorAxis
+            public double pl_orbeccen { get; set; }  // e - planet Eccentricity
+            public double pl_orbincl { get; set; }   // i (degrees) - planet  Inclination
+            public double pl_orblper { get; set; } // ω - planet ArgumentOfPeriapsis 
+            //  MeanAnomalyAtEpoch and EpochTime are not needed, it only used to determine the initial state, which could be anywhere when being observed in real life.
+            //  We just want to set up certain place for simplicity.
         }
         public class StarFJson
         {
-            public string HostName { get; set; }
-            public double st_mass { get; set; } // mass
-            public double st_lum { get; set; } // luminosity
+            public string HostName { get; set; } // star name
+            public double st_mass { get; set; } // star mass
+            public double st_lum { get; set; } // star luminosity
         }
         public class Clouds
         {
