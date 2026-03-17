@@ -1,5 +1,5 @@
 ﻿using NatureOfCodeTest.Model;
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace NatureOfCodeTest
         private async void Token()
         {
             string returnedData = await GetDataAsync(PlanetURL);
-            var weather = JsonSerializer.Deserialize<List<Planet>>(returnedData);
+            var weather = JsonConvert.DeserializeObject<List<PlanetFJson>>(returnedData);
         }
         private async Task<string> GetDataAsync(string url)
         {
@@ -48,18 +48,18 @@ namespace NatureOfCodeTest
         public class PlanetFJson
         {
             public string HostName { get; set; }
-            public string Name { get; set; }
-            public double Mass { get; set; }
-            public double SemiMajorAxis { get; set; } // a
-            public double Eccentricity { get; set; }  // e
-            public double Inclination { get; set; }   // i (độ)
-            public double ArgumentOfPeriapsis { get; set; } // ω
+            public string pl_Name { get; set; }
+            public double pl_Masse { get; set; }
+            public double pl_orbsmax { get; set; } // a
+            public double pl_orbeccen { get; set; }  // e
+            public double pl_orbincl { get; set; }   // i (degrees)
+            public double pl_orblper { get; set; } // ω
         }
         public class StarFJson
         {
-            public string Name { get; set; }
-            public double Mass { get; set; }
-            public double Luminosity { get; set; }
+            public string HostName { get; set; }
+            public double st_mass { get; set; } // mass
+            public double st_lum { get; set; } // luminosity
         }
         public class Clouds
         {
