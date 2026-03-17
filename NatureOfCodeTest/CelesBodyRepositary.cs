@@ -41,6 +41,7 @@ namespace NatureOfCodeTest
             }
         }
         // This one will try to get a whole star system. Meaning: host star + planet(s)
+        // Probably a list with different name for same parameters of the 2
         public List<Student> GetSystem()
         {
             List<Student> students = new List<Student>();
