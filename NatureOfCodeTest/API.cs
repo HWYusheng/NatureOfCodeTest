@@ -64,7 +64,7 @@ namespace NatureOfCodeTest
         {
             public string HostName { get; set; }
             public string pl_Name { get; set; }
-            public double pl_Masse { get; set; } // planet mass
+            public double pl_Masse { get; set; } // planet mass, how many times of earth's mass
             public double pl_orbsmax { get; set; } // a - planet SemiMajorAxis
             public double pl_orbeccen { get; set; }  // e - planet Eccentricity
             public double pl_orbincl { get; set; }   // i (degrees) - planet  Inclination
