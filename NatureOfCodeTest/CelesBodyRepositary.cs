@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NatureOfCodeTest.Model;
+using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
@@ -42,9 +43,9 @@ namespace NatureOfCodeTest
         }
         // This one will try to get a whole star system. Meaning: host star + planet(s)
         // Probably a list with different name for same parameters of the 2, or try to use the celesbody. Or do a method that can store 2 different types at the same time.
-        public List<Student> GetSystem()
+        public List<CelestialBody> GetSystem()
         {
-            List<Student> students = new List<Student>();
+            List<CelestialBody> students = new List<CelestialBody>();
             string sql = "SELECT * FROM tblStudent";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
@@ -54,7 +55,7 @@ namespace NatureOfCodeTest
                 {
                     while (reader.Read())
                     {
-                        Student student = new Student
+                        CelestialBody student = new Student
                         {
                             StudentID = reader.GetInt32(0), // the first column is StudentID
                             FirstName = reader.GetString(1), // the second column is FirstName
