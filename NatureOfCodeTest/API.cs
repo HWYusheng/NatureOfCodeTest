@@ -2,14 +2,15 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Policy;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace NatureOfCodeTest
 {
@@ -20,7 +21,7 @@ namespace NatureOfCodeTest
         private const string PlanetURL = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+top+50+hostname,pl_name,pl_masse,pl_orbsmax,pl_orbeccen,pl_orbincl,pl_orblper+from+ps+where+pl_rade+<+=+1.8+and+pl_masse+>+0+and+rv_flag=1+and+pl_orbsmax+is+not+null+and+pl_orbeccen+is+not+null+and+pl_orbincl+is+not+null+and+pl_orblper+is+not+null&format=json";
         private const string StarURL = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+top+50+hostname,st_mass,st_lum+from+stellarhosts+where+st_mass+is+not+null+and+st_lum+is+not+null&format=json";
         private const string DATA = @"{""object"":{""name"":""Name""}}";
-        private async void Token()
+        public async void Token()
         {
             string returnedData = await GetDataAsync(PlanetURL);
             var weather = JsonConvert.DeserializeObject<List<PlanetFJson>>(returnedData);
@@ -42,6 +43,20 @@ namespace NatureOfCodeTest
                 }
             }
             return "";
+        }
+        string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellarWobble.accdb";
+        public void AddStudent(PlanetFJson planet)
+        {
+            string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?)";
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@FirstName", student.FirstName);
+                cmd.Parameters.AddWithValue("@LastName", student.LastName);
+                cmd.Parameters.AddWithValue("@StudentDOB", student.StudentDOB.ToString("yyyy-MM-dd"));
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
         //pasted json string to json2csharp
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
