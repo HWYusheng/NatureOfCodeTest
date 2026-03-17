@@ -40,6 +40,32 @@ namespace NatureOfCodeTest
                 cmd.ExecuteNonQuery();
             }
         }
+        // This one will try to get a whole star system. Meaning: host star + planet(s)
+        public List<Student> GetSystem()
+        {
+            List<Student> students = new List<Student>();
+            string sql = "SELECT * FROM tblStudent";
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+            {
+                conn.Open();
+                using (OleDbDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Student student = new Student
+                        {
+                            StudentID = reader.GetInt32(0), // the first column is StudentID
+                            FirstName = reader.GetString(1), // the second column is FirstName
+                            LastName = reader.GetString(2), // the third column is LastName
+                            StudentDOB = reader.GetDateTime(3) // the fourth column is StudentDOB
+                        };
+                        students.Add(student);
+                    }
+                }
+            }
+            return students;
+        }
         //pasted json string to json2csharp
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
         public class PlanetFJson
