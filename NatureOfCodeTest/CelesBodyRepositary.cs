@@ -29,7 +29,7 @@ namespace NatureOfCodeTest
         }
         public void AddStar(StarFJson star)
         {
-            string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
             {
