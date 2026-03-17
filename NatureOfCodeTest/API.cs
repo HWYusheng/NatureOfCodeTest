@@ -47,6 +47,7 @@ namespace NatureOfCodeTest
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
         public class PlanetFJson
         {
+            public string HostName { get; set; }
             public string Name { get; set; }
             public double Mass { get; set; }
             public double SemiMajorAxis { get; set; } // a
