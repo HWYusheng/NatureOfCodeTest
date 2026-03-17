@@ -23,7 +23,7 @@ namespace NatureOfCodeTest
         private async void Token()
         {
             string returnedData = await GetDataAsync(URL);
-            var weather = JsonSerializer.Deserialize<List<List<Planet>>(returnedData);
+            var weather = JsonSerializer.Deserialize<List<Planet>>(returnedData);
         }
         private async Task<string> GetDataAsync(string url)
         {
