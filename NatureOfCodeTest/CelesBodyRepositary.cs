@@ -10,7 +10,7 @@ namespace NatureOfCodeTest
     internal class CelesBodyRepositary
     {
         string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellarWobble.accdb";
-        public void AddStudent(PlanetFJson planet)
+        public void AddPlanet(PlanetFJson planet)
         {
             string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?, ?, ?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
@@ -23,6 +23,19 @@ namespace NatureOfCodeTest
                 cmd.Parameters.AddWithValue("@pl_Eccentricity", planet.pl_orbeccen);
                 cmd.Parameters.AddWithValue("@pl_Inclination", planet.pl_orbincl);
                 cmd.Parameters.AddWithValue("@pl_ArgumentOfPeriapsis", planet.pl_orblper);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public void AddStar(StarFJson star)
+        {
+            string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@HostName", star.HostName);
+                cmd.Parameters.AddWithValue("@st_Mass", star.st_mass);
+                cmd.Parameters.AddWithValue("@st_Luminosity", star.st_lum);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
