@@ -10,7 +10,7 @@ namespace NatureOfCodeTest.Model
     {
         public double SolveEccentricAnomaly(double M, double e)
         {
-            // Newton-Raphson to estimate the root
+            // Newton-Raphson to estimate the root (recursion)
             double E = M;
             for (int i = 0; i < 10; i++) 
             {

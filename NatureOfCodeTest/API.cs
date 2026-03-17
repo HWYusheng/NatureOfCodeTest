@@ -22,7 +22,7 @@ namespace NatureOfCodeTest
         private const string DATA = @"{""object"":{""name"":""Name""}}";
         private async void Token()
         {
-            string returnedData = await GetDataAsync(URL);
+            string returnedData = await GetDataAsync(PlanetURL);
             var weather = JsonSerializer.Deserialize<List<Planet>>(returnedData);
         }
         private async Task<string> GetDataAsync(string url)
