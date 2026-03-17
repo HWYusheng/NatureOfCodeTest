@@ -41,7 +41,7 @@ namespace NatureOfCodeTest
             }
         }
         // This one will try to get a whole star system. Meaning: host star + planet(s)
-        // Probably a list with different name for same parameters of the 2. Or do a method that can store 2 different types at the same time.
+        // Probably a list with different name for same parameters of the 2, or try to use the celesbody. Or do a method that can store 2 different types at the same time.
         public List<Student> GetSystem()
         {
             List<Student> students = new List<Student>();
