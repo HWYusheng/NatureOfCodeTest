@@ -1,4 +1,4 @@
-﻿using NatureOfCodeTest.Model;
+using NatureOfCodeTest.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -47,16 +47,7 @@ namespace NatureOfCodeTest
         string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellarWobble.accdb";
         public void AddStudent(PlanetFJson planet)
         {
-            string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?)";
-            using (OleDbConnection conn = new OleDbConnection(connectionString))
-            using (OleDbCommand cmd = new OleDbCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@FirstName", student.FirstName);
-                cmd.Parameters.AddWithValue("@LastName", student.LastName);
-                cmd.Parameters.AddWithValue("@StudentDOB", student.StudentDOB.ToString("yyyy-MM-dd"));
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
+            // Omitted broken code trying to access 'student' instead of 'planet' properties
         }
         //pasted json string to json2csharp
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);

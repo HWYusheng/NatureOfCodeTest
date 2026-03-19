@@ -32,6 +32,7 @@ namespace NatureOfCodeTest
             this.pnlOrbitalMap = new System.Windows.Forms.Panel();
             this.lblData = new System.Windows.Forms.Label();
             this.btnShowRV = new System.Windows.Forms.Button();
+            this.btnPlayFitLineGame = new System.Windows.Forms.Button();
             this.btnShowDistance = new System.Windows.Forms.Button();
             this.trkSpeed = new System.Windows.Forms.TrackBar();
             this.lblSpeed = new System.Windows.Forms.Label();
@@ -74,6 +75,18 @@ namespace NatureOfCodeTest
             this.btnShowRV.UseVisualStyleBackColor = true;
             this.btnShowRV.Click += new System.EventHandler(this.btnShowRV_Click);
             // 
+            // btnPlayFitLineGame
+            // 
+            this.btnPlayFitLineGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPlayFitLineGame.Location = new System.Drawing.Point(350, 462);
+            this.btnPlayFitLineGame.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnPlayFitLineGame.Name = "btnPlayFitLineGame";
+            this.btnPlayFitLineGame.Size = new System.Drawing.Size(180, 44);
+            this.btnPlayFitLineGame.TabIndex = 6;
+            this.btnPlayFitLineGame.Text = "Play Fit Line Game";
+            this.btnPlayFitLineGame.UseVisualStyleBackColor = true;
+            this.btnPlayFitLineGame.Click += new System.EventHandler(this.btnPlayFitLineGame_Click);
+            // 
             // btnShowDistance
             // 
             this.btnShowDistance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -115,6 +128,7 @@ namespace NatureOfCodeTest
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(960, 538);
+            this.Controls.Add(this.btnPlayFitLineGame);
             this.Controls.Add(this.btnShowDistance);
             this.Controls.Add(this.lblSpeed);
             this.Controls.Add(this.trkSpeed);
@@ -135,6 +149,7 @@ namespace NatureOfCodeTest
         #endregion
 
         private System.Windows.Forms.Panel pnlOrbitalMap;
+        private System.Windows.Forms.Button btnPlayFitLineGame;
         private System.Windows.Forms.Button btnShowRV;
         private System.Windows.Forms.Button btnShowDistance;
         private System.Windows.Forms.Label lblData;

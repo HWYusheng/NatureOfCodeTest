@@ -87,6 +87,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FitLineGameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="API.cs" />
     <Compile Include="CelesBodyRepositary.cs" />
     <Compile Include="Form1.cs">

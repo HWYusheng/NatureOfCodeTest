@@ -43,6 +43,11 @@ namespace NatureOfCodeTest
             InitializeTimer();
         }
 
+        private void btnPlayFitLineGame_Click(object sender, EventArgs e)
+        {
+            new FitLineGameForm().Show();
+        }
+
         private void InitializeSimulation()
         {
             // Setup objects
