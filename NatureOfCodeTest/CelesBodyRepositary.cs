@@ -1,8 +1,10 @@
 ﻿using NatureOfCodeTest.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +15,7 @@ namespace NatureOfCodeTest
         string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellarWobble.accdb";
         public void AddPlanet(PlanetFJson planet)
         {
-            string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            string sql = "INSERT INTO tblPlanet (HostName, pl_Name, pl_Masse, pl_SemiMajorAxis, pl_Eccentricity, pl_Inclination, pl_ArgumentOfPeriapsis) VALUES (?, ?, ?, ?, ?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
             {
@@ -30,7 +32,7 @@ namespace NatureOfCodeTest
         }
         public void AddStar(StarFJson star)
         {
-            string sql = "INSERT INTO tblStudent (FirstName, LastName, StudentDOB) VALUES (?, ?, ?)";
+            string sql = "INSERT INTO tblStar (HostName, st_Mass, st_Luminosity) VALUES (?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
             {
@@ -43,34 +45,42 @@ namespace NatureOfCodeTest
         }
         // This one will try to get a whole star system. Meaning: host star + planet(s)
         // Probably a list with different name for same parameters of the 2, or try to use the celesbody. Or do a method that can store 2 different types at the same time.
-        //public List<CelestialBody> GetSystem()
-        //{
-        //    List<CelestialBody> students = new List<CelestialBody>();
-        //    string sql = "SELECT * FROM tblStudent";
-        //    using (OleDbConnection conn = new OleDbConnection(connectionString))
-        //    using (OleDbCommand cmd = new OleDbCommand(sql, conn))
-        //    {
-        //        conn.Open();
-        //        using (OleDbDataReader reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                CelestialBody student = new Student
-        //                {
-        //                    StudentID = reader.GetInt32(0), // the first column is StudentID
-        //                    FirstName = reader.GetString(1), // the second column is FirstName
-        //                    LastName = reader.GetString(2), // the third column is LastName
-        //                    StudentDOB = reader.GetDateTime(3) // the fourth column is StudentDOB
-        //                };
-        //                students.Add(student);
-        //            }
-        //        }
-        //    }
-        //    return students;
-        //}
+        public List<CelestialBodyFJson> GetSystem()
+        {
+            List<CelestialBodyFJson> students = new List<CelestialBodyFJson>();
+            string sql = "SELECT * FROM tblStudent";
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+            {
+                conn.Open();
+                using (OleDbDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        CelestialBody Body = new Body
+                        {
+                            StudentID = reader.GetInt32(0), // the first column is StudentID
+                            FirstName = reader.GetString(1), // the second column is FirstName
+                            LastName = reader.GetString(2), // the third column is LastName
+                            StudentDOB = reader.GetDateTime(3) // the fourth column is StudentDOB
+                        };
+                        students.Add(Body);
+                    }
+                }
+            }
+            return students;
+        }
         //pasted json string to json2csharp
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-        public class PlanetFJson
+        [Serializable]
+        public abstract class CelestialBodyFJson
+        {
+            [JsonProperty("name")]
+            public string Name { get; set; }
+            public double Mass { get; set; }
+
+        }
+        public class PlanetFJson : CelestialBodyFJson
         {
             // 7 in total
             public string HostName { get; set; }
@@ -83,7 +93,7 @@ namespace NatureOfCodeTest
             //  MeanAnomalyAtEpoch and EpochTime are not needed, it only used to determine the initial state, which could be anywhere when being observed in real life.
             //  We just want to set up a certain place for simplicity.
         }
-        public class StarFJson
+        public class StarFJson : CelestialBodyFJson
         {
             // 3 in total
             public string HostName { get; set; } // star name
