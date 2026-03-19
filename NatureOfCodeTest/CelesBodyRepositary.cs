@@ -45,9 +45,9 @@ namespace NatureOfCodeTest
         }
         // This one will try to get a whole star system. Meaning: host star + planet(s)
         // Probably a list with different name for same parameters of the 2, or try to use the celesbody. Or do a method that can store 2 different types at the same time.
-        public List<CelestialBodyFJson> GetSystem()
+        public List<CelestialBody> GetSystem()
         {
-            List<CelestialBodyFJson> students = new List<CelestialBodyFJson>();
+            List<CelestialBody> students = new List<CelestialBody>();
             string sql = "SELECT * FROM tblStudent";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
@@ -57,12 +57,8 @@ namespace NatureOfCodeTest
                 {
                     while (reader.Read())
                     {
-                        CelestialBody Body = new Body
+                        CelestialBody Body = new CelestialBody
                         {
-                            StudentID = reader.GetInt32(0), // the first column is StudentID
-                            FirstName = reader.GetString(1), // the second column is FirstName
-                            LastName = reader.GetString(2), // the third column is LastName
-                            StudentDOB = reader.GetDateTime(3) // the fourth column is StudentDOB
                         };
                         students.Add(Body);
                     }

@@ -26,6 +26,7 @@ namespace NatureOfCodeTest.Model
 
     public class Star : CelestialBody
     {
+        public string HostName { get; set; } // star name
         public double Luminosity { get; set; }
         public List<Vector2> VelocityHistory { get; private set; } = new List<Vector2>();
 
@@ -34,6 +35,8 @@ namespace NatureOfCodeTest.Model
 
     public class Planet : CelestialBody
     {
+        public string HostName { get; set; }
+        public string pl_Name { get; set; }
         public OrbitalElements Orbit { get; set; }
     }
 }
