@@ -47,24 +47,40 @@ namespace NatureOfCodeTest
         // Probably a list with different name for same parameters of the 2, or try to use the celesbody. Or do a method that can store 2 different types at the same time.
         public List<CelestialBody> GetSystem()
         {
-            List<CelestialBody> students = new List<CelestialBody>();
-            string sql = "SELECT * FROM tblStudent";
+            List<CelestialBody> CelesBodies = new List<CelestialBody>();
+            string sqlFStar = "SELECT * FROM tblStar";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
-            using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+            using (OleDbCommand cmd = new OleDbCommand(sqlFStar, conn))
             {
                 conn.Open();
                 using (OleDbDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        CelestialBody Body = new CelestialBody
+                        Star star = new Star
                         {
                         };
-                        students.Add(Body);
+                        CelesBodies.Add(star);
                     }
                 }
             }
-            return students;
+            string sqlFPlanet = "SELECT * FROM tblPlanet";
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            using (OleDbCommand cmd = new OleDbCommand(sqlFPlanet, conn))
+            {
+                conn.Open();
+                using (OleDbDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Planet planet = new Planet
+                        {
+                        };
+                        CelesBodies.Add(planet);
+                    }
+                }
+            }
+            return CelesBodies;
         }
         //pasted json string to json2csharp
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
