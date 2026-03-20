@@ -24,7 +24,7 @@ namespace NatureOfCodeTest
 
         private const string DATA = @"{""object"":{""name"":""Name""}}";
         CelesBodyRepositary celesBodyRepositary = new CelesBodyRepositary();
-        public async void UpdateDataToAccess()
+        public async void UpdateDataToAccessDB()
         {
             string returnedPlanetData = await GetDataAsync(PlanetURL);
             string returnedStarData = await GetDataAsync(StarURL);

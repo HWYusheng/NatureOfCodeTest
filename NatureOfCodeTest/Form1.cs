@@ -21,6 +21,7 @@ namespace NatureOfCodeTest
         private float wavePhase = 0f; // For wave animation
 
         private float scaleAUToPixels = 300f; // 1 AU = 300 pixels (Increased from 150)
+        API api = new API();
 
         // https://stackoverflow.com/questions/61261191/how-do-you-remove-the-flickering-in-the-paint-method
         public Form1()
@@ -30,6 +31,7 @@ namespace NatureOfCodeTest
             this.lblData.Width = 50;
             this.lblData.Height = 100;
             this.lblData.ForeColor = Color.AntiqueWhite;
+            api.UpdateDataToAccessDB();
 
             this.pnlOrbitalMap.Paint += PnlOrbitalMap_Paint;
 
