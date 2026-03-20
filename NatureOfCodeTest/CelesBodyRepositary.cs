@@ -108,7 +108,7 @@ namespace NatureOfCodeTest
         public class StarFJson : CelestialBodyFJson
         {
             // 3 in total
-            public string HostName { get; set; } // star name
+            public string HostName { get; set; } // basiclly star name
             public double st_mass { get; set; } // star mass
             public double st_lum { get; set; } // star luminosity
         }
