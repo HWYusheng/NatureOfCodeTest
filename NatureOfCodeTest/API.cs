@@ -28,10 +28,16 @@ namespace NatureOfCodeTest
         {
             string returnedPlanetData = await GetDataAsync(PlanetURL);
             string returnedStarData = await GetDataAsync(StarURL);
-            var planetsCol = JsonConvert.DeserializeObject<List<Planet>>(returnedPlanetData);
+            var planetsCol = JsonConvert.DeserializeObject<List<PlanetFJson>>(returnedPlanetData);
             var starsCol = JsonConvert.DeserializeObject<List<Star>>(returnedStarData);
-            foreach (var _planet in planetsCol)
+            foreach (var item in planetsCol)
             {
+                Planet _planet = new Planet
+                {
+                    Name = item.pl_Name,
+                    Mass = item.pl_Masse,
+
+                };
                 celesBodyRepositary.AddPlanet(_planet);
             }
             foreach (var _star in starsCol)
