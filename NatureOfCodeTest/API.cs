@@ -36,10 +36,13 @@ namespace NatureOfCodeTest
                 {
                     Name = item.pl_Name,
                     Mass = item.pl_Masse,
-                    Orbit.SemiMajorAxis = item.pl_orbsmax,
-                    Orbit.Eccentricity = item.pl_orbeccen,
-                    Orbit.Inclination  = item.pl_inclination,
-                    Orbit.ArgumentOfPeriapsis = item.pl_orblper,
+                    Orbit = new NatureOfCodeTest.Model.OrbitalElements
+                    {
+                        SemiMajorAxis = item.pl_orbsmax,
+                        Eccentricity = item.pl_orbeccen,
+                        Inclination = item.pl_orbincl,
+                        ArgumentOfPeriapsis = item.pl_orblper,
+                    }
                 };
                 celesBodyRepositary.AddPlanet(_planet);
             }
