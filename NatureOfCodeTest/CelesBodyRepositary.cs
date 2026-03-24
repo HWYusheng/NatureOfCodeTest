@@ -16,11 +16,12 @@ namespace NatureOfCodeTest
         string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellerWobble.accdb";
         public void AddPlanet(Planet planet)
         {
-            string sql = "INSERT INTO tblPlanet (HostName, pl_Name, pl_Masse, pl_orbsmax, pl_orbeccen, pl_orbincl, pl_orblper) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            int StarID = GetStarID(planet.HostName);
+            string sql = "INSERT INTO tblPlanet (StarID, pl_Name, pl_Masse, pl_orbsmax, pl_orbeccen, pl_orbincl, pl_orblper) VALUES (?, ?, ?, ?, ?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@HostName", planet.HostName);
+                cmd.Parameters.AddWithValue("@StarID", StarID);
                 cmd.Parameters.AddWithValue("@pl_Name", planet.Name);
                 cmd.Parameters.AddWithValue("@pl_Masse", planet.Mass);
                 cmd.Parameters.AddWithValue("@pl_orbsmax", planet.Orbit.SemiMajorAxis);
@@ -50,6 +51,27 @@ namespace NatureOfCodeTest
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+        }
+        public int GetStarID(string HostName) 
+        {
+            int _starID = 0;
+            string sql = "SELECT StarID FROM tblStudent WHERE HostName = ?"; // ? is a placeholder for parameters in OleDb
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+            {
+                conn.Open();
+                cmd.Parameters.AddWithValue("@HostName", HostName); // add the parameter value
+
+                using (OleDbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        _starID = reader.GetInt32(0);
+                    };
+                }
+            }
+
+            return _starID;
         }
         // This one will try to get a whole star system. Meaning: host star + planet(s)
         // Probably a list with different name for same parameters of the 2, or try to use the celesbody. Or do a method that can store 2 different types at the same time.
