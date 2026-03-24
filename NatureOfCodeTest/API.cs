@@ -29,19 +29,31 @@ namespace NatureOfCodeTest
             string returnedPlanetData = await GetDataAsync(PlanetURL);
             string returnedStarData = await GetDataAsync(StarURL);
             var planetsCol = JsonConvert.DeserializeObject<List<PlanetFJson>>(returnedPlanetData);
-            var starsCol = JsonConvert.DeserializeObject<List<Star>>(returnedStarData);
+            var starsCol = JsonConvert.DeserializeObject<List<StarFJson>>(returnedStarData);
             foreach (var item in planetsCol)
             {
                 Planet _planet = new Planet
                 {
                     Name = item.pl_Name,
                     Mass = item.pl_Masse,
-
+                    Orbit = new NatureOfCodeTest.Model.OrbitalElements
+                    {
+                        SemiMajorAxis = item.pl_orbsmax,
+                        Eccentricity = item.pl_orbeccen,
+                        Inclination = item.pl_orbincl,
+                        ArgumentOfPeriapsis = item.pl_orblper,
+                    }
                 };
                 celesBodyRepositary.AddPlanet(_planet);
             }
-            foreach (var _star in starsCol)
+            foreach (var item in starsCol)
             {
+                Star _star = new Star
+                {
+                    Name = item.HostName,
+                    Mass = item.st_mass,
+                    Luminosity = item.st_lum,
+                };
                 celesBodyRepositary.AddStar(_star);
             }
         }
