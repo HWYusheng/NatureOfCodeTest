@@ -99,6 +99,8 @@ namespace NatureOfCodeTest
         // Probably a list with different name for same parameters of the 2, or try to use the celesbody. Or do a method that can store 2 different types at the same time.
         public List<CelestialBody> GetSystem()
         {
+            // The idea is to let it chose a system with a number of planets. Different difficulties will have different number of planets in a system. Easy would be 1, Hard would be 2 or more.
+            // The system would be chosen at random if multiple system meet the criteria
             List<CelestialBody> CelesBodies = new List<CelestialBody>();
             string sqlFStar = "SELECT * FROM tblStar, tblPlanet WHERE ";
             using (OleDbConnection conn = new OleDbConnection(connectionString))

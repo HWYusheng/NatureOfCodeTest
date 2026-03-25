@@ -334,5 +334,23 @@ namespace NatureOfCodeTest
             g.DrawString($"RV Min: {-maxVelRange:F2} m/s", font, brush, 5, h - marginBottom - 15);
             g.DrawString($"Window: {displayMaxTimeDays:F1} days", font, brush, w - 150, h - 20);
         }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // FitLineGameForm
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Name = "FitLineGameForm";
+            this.Load += new System.EventHandler(this.FitLineGameForm_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void FitLineGameForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
