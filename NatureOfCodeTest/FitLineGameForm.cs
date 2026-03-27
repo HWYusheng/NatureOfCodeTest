@@ -33,6 +33,7 @@ namespace NatureOfCodeTest
         
         public FitLineGameForm()
         {
+            EnableDoubleBuffering();
             InitializeComponentsRunTime();
             StartNewGame();
         }
@@ -347,7 +348,10 @@ namespace NatureOfCodeTest
             this.ResumeLayout(false);
 
         }
-
+        private void EnableDoubleBuffering()
+        {
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+        }
         private void FitLineGameForm_Load(object sender, EventArgs e)
         {
 
