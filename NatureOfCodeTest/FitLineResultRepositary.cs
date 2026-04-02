@@ -10,6 +10,7 @@ namespace NatureOfCodeTest
         public double FitScore { get; set; }
         public int TimeTakenSec { get; set; }
         public int Timestamp { get; set; }
+        public string PlanetName { get; set; }
         
         public DateTime DatePlayed 
         {
@@ -46,7 +47,7 @@ namespace NatureOfCodeTest
         public List<FitLineResult> GetAllResults()
         {
             List<FitLineResult> results = new List<FitLineResult>();
-            string sql = "SELECT SimulationID, [Timestamp], FitScore, TimeTakenSec FROM Simulations WHERE IsFitLineGame = True ORDER BY SimulationID DESC";
+            string sql = "SELECT s.SimulationID, s.[Timestamp], s.FitScore, s.TimeTakenSec, p.pl_Name FROM Simulations s INNER JOIN tblPlanet p ON s.PlanetID = p.PlanetID WHERE s.IsFitLineGame = True ORDER BY s.SimulationID DESC";
             
             try
             {
@@ -63,7 +64,8 @@ namespace NatureOfCodeTest
                                 SimulationID = reader.GetInt32(0),
                                 Timestamp = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                                 FitScore = reader.IsDBNull(2) ? 0.0 : reader.GetDouble(2),
-                                TimeTakenSec = reader.IsDBNull(3) ? 0 : reader.GetInt32(3)
+                                TimeTakenSec = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                                PlanetName = reader.IsDBNull(4) ? "Unknown" : reader.GetString(4)
                             });
                         }
                     }
@@ -76,6 +78,32 @@ namespace NatureOfCodeTest
             }
             
             return results;
+        }
+        public (double AvgScore, double AvgTime) GetAverages()
+        {
+            string sql = "SELECT AVG(FitScore), AVG(TimeTakenSec) FROM Simulations WHERE IsFitLineGame = True";
+            try
+            {
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+                {
+                    conn.Open();
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            double avgScore = reader.IsDBNull(0) ? 0.0 : reader.GetDouble(0);
+                            double avgTime = reader.IsDBNull(1) ? 0.0 : reader.GetDouble(1);
+                            return (avgScore, avgTime);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not fetch averages: " + ex.Message);
+            }
+            return (0.0, 0.0);
         }
     }
 }

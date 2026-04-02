@@ -8,6 +8,7 @@ namespace NatureOfCodeTest
     public class FitLineResultBoardForm : Form
     {
         private DataGridView gridResults;
+        private Label lblAverages;
         private FitLineResultRepositary repo;
 
         public FitLineResultBoardForm()
@@ -23,6 +24,15 @@ namespace NatureOfCodeTest
             this.Size = new Size(600, 450);
             this.StartPosition = FormStartPosition.CenterParent;
 
+            lblAverages = new Label
+            {
+                Dock = DockStyle.Top,
+                Height = 30,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font(this.Font, FontStyle.Bold),
+                Padding = new Padding(10, 0, 0, 0)
+            };
+
             gridResults = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -35,6 +45,7 @@ namespace NatureOfCodeTest
             };
 
             this.Controls.Add(gridResults);
+            this.Controls.Add(lblAverages);
         }
 
         private void LoadData()
@@ -44,12 +55,16 @@ namespace NatureOfCodeTest
             // Format for display
             var displayData = results.Select(r => new {
                 AttemptID = r.SimulationID,
+                PlanetName = r.PlanetName,
                 Date = r.DatePlayed.ToString("yyyy-MM-dd HH:mm:ss"),
                 Score = r.FitScore.ToString("F1") + " / 100",
                 Time_Taken = r.TimeTakenSec + "s"
             }).ToList();
 
             gridResults.DataSource = displayData;
+            
+            var avgs = repo.GetAverages();
+            lblAverages.Text = $"Average Score: {avgs.AvgScore:F1} | Average Time: {avgs.AvgTime:F1}s";
         }
 
         private void InitializeComponent()
