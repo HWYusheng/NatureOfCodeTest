@@ -74,54 +74,54 @@ namespace NatureOfCodeTest
             int currentY = 420;
 
             // Amplitude
-            lblAmp = new Label { Location = new Point(10, currentY), Size = new Size(150, 20), Text = "Amplitude: 0%" };
+            lblAmp = new Label { Location = new Point(10, currentY), Size = new Size(150, 20), Text = "Amplitude: 0%", Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
             this.Controls.Add(lblAmp);
             
-            trkAmplitude = new TrackBar { Location = new Point(160, currentY), Size = new Size(400, 45), Minimum = 10, Maximum = 200, Value = 100, TickFrequency = 10 };
+            trkAmplitude = new TrackBar { Location = new Point(160, currentY), Size = new Size(400, 45), Minimum = 10, Maximum = 200, Value = 100, TickFrequency = 10, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
             trkAmplitude.Scroll += (s, e) => { pnlGraph.Invalidate(); lblAmp.Text = $"Amplitude: {trkAmplitude.Value}%"; };
             this.Controls.Add(trkAmplitude);
 
             currentY += 45;
 
             // Period
-            lblPeriod = new Label { Location = new Point(10, currentY), Size = new Size(150, 20), Text = "Period: 100 Days" };
+            lblPeriod = new Label { Location = new Point(10, currentY), Size = new Size(150, 20), Text = "Period: 100 Days", Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
             this.Controls.Add(lblPeriod);
             
-            trkPeriod = new TrackBar { Location = new Point(160, currentY), Size = new Size(400, 45), Minimum = 50, Maximum = 1500, Value = 365, TickFrequency = 50 };
+            trkPeriod = new TrackBar { Location = new Point(160, currentY), Size = new Size(400, 45), Minimum = 50, Maximum = 1500, Value = 365, TickFrequency = 50, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
             trkPeriod.Scroll += (s, e) => { pnlGraph.Invalidate(); lblPeriod.Text = $"Period: {trkPeriod.Value} Days"; };
             this.Controls.Add(trkPeriod);
 
             currentY += 45;
 
             // Phase
-            lblPhase = new Label { Location = new Point(10, currentY), Size = new Size(150, 20), Text = "Phase: 0°" };
+            lblPhase = new Label { Location = new Point(10, currentY), Size = new Size(150, 20), Text = "Phase: 0°", Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
             this.Controls.Add(lblPhase);
             
-            trkPhase = new TrackBar { Location = new Point(160, currentY), Size = new Size(400, 45), Minimum = 0, Maximum = 360, Value = 180, TickFrequency = 15 };
+            trkPhase = new TrackBar { Location = new Point(160, currentY), Size = new Size(400, 45), Minimum = 0, Maximum = 360, Value = 180, TickFrequency = 15, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
             trkPhase.Scroll += (s, e) => { pnlGraph.Invalidate(); lblPhase.Text = $"Phase: {trkPhase.Value}°"; };
             this.Controls.Add(trkPhase);
 
             // Buttons
-            btnNewGame = new Button { Location = new Point(520, 420), Size = new Size(140, 40), Text = "New System", ForeColor = Color.YellowGreen, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnNewGame = new Button { Location = new Point(520, 420), Size = new Size(140, 40), Text = "New System", ForeColor = Color.YellowGreen, Font = new Font("Arial", 10, FontStyle.Bold), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             btnNewGame.Click += (s, e) => StartNewGame();
             this.Controls.Add(btnNewGame);
 
-            btnRetry = new Button { Location = new Point(670, 420), Size = new Size(140, 40), Text = "Retry System", ForeColor = Color.Orange, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnRetry = new Button { Location = new Point(670, 420), Size = new Size(140, 40), Text = "Retry System", ForeColor = Color.Orange, Font = new Font("Arial", 10, FontStyle.Bold), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             btnRetry.Click += (s, e) => RetryCurrentGame();
             this.Controls.Add(btnRetry);
 
-            btnSubmit = new Button { Location = new Point(820, 420), Size = new Size(140, 40), Text = "Submit Fit", ForeColor = Color.Black, Font = new Font("Arial", 10, FontStyle.Bold), BackColor = Color.LightGreen };
+            btnSubmit = new Button { Location = new Point(820, 420), Size = new Size(140, 40), Text = "Submit Fit", ForeColor = Color.Black, Font = new Font("Arial", 10, FontStyle.Bold), BackColor = Color.LightGreen, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             btnSubmit.Click += BtnSubmit_Click;
             this.Controls.Add(btnSubmit);
             
-            btnResultBoard = new Button { Location = new Point(800, 480), Size = new Size(130, 40), Text = "Result Board", ForeColor = Color.White, BackColor = Color.DimGray, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnResultBoard = new Button { Location = new Point(800, 480), Size = new Size(130, 40), Text = "Result Board", ForeColor = Color.White, BackColor = Color.DimGray, Font = new Font("Arial", 10, FontStyle.Bold), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             btnResultBoard.Click += (s, e) => { new FitLineResultBoardForm().ShowDialog(); };
             this.Controls.Add(btnResultBoard);
 
-            lblScore = new Label { Location = new Point(580, 490), Size = new Size(310, 80), Text = "Fit the line to the data points!", Font = new Font("Arial", 12, FontStyle.Bold), ForeColor = Color.LightSkyBlue };
+            lblScore = new Label { Location = new Point(520, 490), Size = new Size(270, 80), Text = "Fit the line to the data points!", Font = new Font("Arial", 12, FontStyle.Bold), ForeColor = Color.LightSkyBlue, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             this.Controls.Add(lblScore);
 
-            lblTimer = new Label { Location = new Point(580, 470), Size = new Size(150, 30), Text = "Time: 0s", ForeColor = Color.White, Font = new Font("Arial", 10, FontStyle.Bold) };
+            lblTimer = new Label { Location = new Point(520, 470), Size = new Size(150, 30), Text = "Time: 0s", ForeColor = Color.White, Font = new Font("Arial", 10, FontStyle.Bold), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             this.Controls.Add(lblTimer);
         }
 
