@@ -22,6 +22,11 @@ namespace NatureOfCodeTest
 
         private Button btnNewGame;
         private Button btnSubmit;
+        private Button btnResultBoard;
+        private Label lblTimer;
+        private System.Windows.Forms.Timer gameTimer;
+        private int timeTakenSeconds;
+        private FitLineResultRepositary repo;
 
         private SimulationEngine engine;
         private List<PointF> noisyDataPoints = new List<PointF>();
@@ -44,6 +49,12 @@ namespace NatureOfCodeTest
             this.Size = new Size(1000, 600);
             this.BackColor = Color.Black;
             this.ForeColor = Color.White;
+
+            repo = new FitLineResultRepositary();
+            
+            gameTimer = new System.Windows.Forms.Timer();
+            gameTimer.Interval = 1000;
+            gameTimer.Tick += (s, e) => { timeTakenSeconds++; lblTimer.Text = $"Time: {timeTakenSeconds}s"; };
 
             pnlGraph = new Panel
             {
@@ -94,15 +105,26 @@ namespace NatureOfCodeTest
             btnSubmit = new Button { Location = new Point(740, 420), Size = new Size(150, 40), Text = "Submit Fit", ForeColor = Color.Black, Font = new Font("Arial", 10, FontStyle.Bold), BackColor = Color.LightGreen };
             btnSubmit.Click += BtnSubmit_Click;
             this.Controls.Add(btnSubmit);
+            
+            btnResultBoard = new Button { Location = new Point(420, 420), Size = new Size(150, 40), Text = "Result Board", ForeColor = Color.White, BackColor = Color.DimGray, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnResultBoard.Click += (s, e) => { new FitLineResultBoardForm().ShowDialog(); };
+            this.Controls.Add(btnResultBoard);
 
             lblScore = new Label { Location = new Point(580, 480), Size = new Size(310, 80), Text = "Fit the line to the data points!", Font = new Font("Arial", 12, FontStyle.Bold), ForeColor = Color.LightSkyBlue };
             this.Controls.Add(lblScore);
+
+            lblTimer = new Label { Location = new Point(420, 480), Size = new Size(150, 30), Text = "Time: 0s", ForeColor = Color.White, Font = new Font("Arial", 10, FontStyle.Bold) };
+            this.Controls.Add(lblTimer);
         }
 
         private void StartNewGame()
         {
             lblScore.Text = "Fit the line to the data points!\nAdjust sliders and click Submit.";
             lblScore.ForeColor = Color.LightSkyBlue;
+
+            timeTakenSeconds = 0;
+            lblTimer.Text = "Time: 0s";
+            gameTimer.Start();
 
             // Randomize parameters
             double starMass = (0.5 + random.NextDouble() * 1.5) * NatureOfCodeTest.Model.PhysicalConstants.SolarMass;
@@ -207,6 +229,8 @@ namespace NatureOfCodeTest
         {
             if (noisyDataPoints.Count == 0 || trueMaxVel == 0) return;
 
+            gameTimer.Stop();
+
             // Calculate actual error vs User curve
             // Score based on Mean Absolute Error
             double totalError = 0;
@@ -249,6 +273,8 @@ namespace NatureOfCodeTest
                 lblScore.ForeColor = Color.LightCoral;
                 lblScore.Text = $"Poor Fit.\nScore: {scorePercent:F1}/100\nTry adjusting Amplitude or Period.";
             }
+
+            repo.AddResult(scorePercent, timeTakenSeconds);
         }
 
         private void PnlGraph_Paint(object sender, PaintEventArgs e)
