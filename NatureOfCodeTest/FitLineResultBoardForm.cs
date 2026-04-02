@@ -13,11 +13,11 @@ namespace NatureOfCodeTest
         public FitLineResultBoardForm()
         {
             repo = new FitLineResultRepositary();
-            InitializeComponent();
+            SetupUI();
             LoadData();
         }
 
-        private void InitializeComponent()
+        private void SetupUI()
         {
             this.Text = "Fit Line Result Board";
             this.Size = new Size(600, 450);
@@ -50,6 +50,24 @@ namespace NatureOfCodeTest
             }).ToList();
 
             gridResults.DataSource = displayData;
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // FitLineResultBoardForm
+            // 
+            this.ClientSize = new System.Drawing.Size(274, 229);
+            this.Name = "FitLineResultBoardForm";
+            this.Load += new System.EventHandler(this.FitLineResultBoardForm_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void FitLineResultBoardForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

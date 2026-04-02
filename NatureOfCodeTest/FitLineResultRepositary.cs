@@ -27,14 +27,13 @@ namespace NatureOfCodeTest
 
         public void AddResult(int planetID, double score, int timeTakenSec)
         {
-            int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+           
 
-            string sql = "INSERT INTO Simulations (PlanetID, Timestamp, FitScore, TimeTakenSec, IsFitLineGame) VALUES (?, ?, ?, ?, ?)";
+            string sql = "INSERT INTO Simulations (PlanetID, FitScore, TimeTakenSec, IsFitLineGame) VALUES (?, ?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@PlanetID", planetID);
-                cmd.Parameters.AddWithValue("@Timestamp", unixTimestamp);
                 cmd.Parameters.AddWithValue("@FitScore", score);
                 cmd.Parameters.AddWithValue("@TimeTakenSec", timeTakenSec);
                 cmd.Parameters.AddWithValue("@IsFitLineGame", true);
@@ -47,7 +46,7 @@ namespace NatureOfCodeTest
         public List<FitLineResult> GetAllResults()
         {
             List<FitLineResult> results = new List<FitLineResult>();
-            string sql = "SELECT SimulationID, Timestamp, FitScore, TimeTakenSec FROM Simulations WHERE IsFitLineGame = True ORDER BY SimulationID DESC";
+            string sql = "SELECT SimulationID, [Timestamp], FitScore, TimeTakenSec FROM Simulations WHERE IsFitLineGame = True ORDER BY SimulationID DESC";
             
             try
             {

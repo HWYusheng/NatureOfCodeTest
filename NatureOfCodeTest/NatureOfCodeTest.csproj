@@ -119,6 +119,9 @@
     <EmbeddedResource Include="FitLineGameForm.resx">
       <DependentUpon>FitLineGameForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FitLineResultBoardForm.resx">
+      <DependentUpon>FitLineResultBoardForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
