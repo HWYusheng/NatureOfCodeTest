@@ -27,6 +27,8 @@ namespace NatureOfCodeTest
         private System.Windows.Forms.Timer gameTimer;
         private int timeTakenSeconds;
         private FitLineResultRepositary repo;
+        private CelesBodyRepositary systemRepo;
+        private int currentPlanetID = -1;
 
         private SimulationEngine engine;
         private List<PointF> noisyDataPoints = new List<PointF>();
@@ -51,6 +53,7 @@ namespace NatureOfCodeTest
             this.ForeColor = Color.White;
 
             repo = new FitLineResultRepositary();
+            systemRepo = new CelesBodyRepositary();
             
             gameTimer = new System.Windows.Forms.Timer();
             gameTimer.Interval = 1000;
@@ -126,37 +129,46 @@ namespace NatureOfCodeTest
             lblTimer.Text = "Time: 0s";
             gameTimer.Start();
 
-            // Randomize parameters
-            double starMass = (0.5 + random.NextDouble() * 1.5) * NatureOfCodeTest.Model.PhysicalConstants.SolarMass;
-            // Planet mass from Jupiter mass (1.898e27) to 20x Jupiter
-            double jupiterMass = 1.898e27;
-            double planetMass = (0.5 + random.NextDouble() * 19.5) * jupiterMass; 
-            
-            // Semi-major axis from 0.1 AU to 1.5 AU
-            double semiMajorAU = 0.1 + random.NextDouble() * 1.4;
-            double semiMajor = semiMajorAU * NatureOfCodeTest.Model.PhysicalConstants.AU;
-
-            Star sun = new NatureOfCodeTest.Model.Star
+            var systemData = systemRepo.GetRandomSystem();
+            if (systemData == null)
             {
-                Name = "Random Star",
-                Mass = starMass,
-                Position = Vector2.Zero
-            };
-
-            Planet planet = new NatureOfCodeTest.Model.Planet
-            {
-                Name = "Random Exoplanet",
-                Mass = planetMass,
-                Orbit = new NatureOfCodeTest.Model.OrbitalElements
+                currentPlanetID = -1;
+                // Fallback if db is empty or error
+                double tempStarMass = (0.5 + random.NextDouble() * 1.5) * NatureOfCodeTest.Model.PhysicalConstants.SolarMass;
+                double tempPlanetMass = (0.5 + random.NextDouble() * 19.5) * 1.898e27;
+                double tempSemiMajor = (0.1 + random.NextDouble() * 1.4) * NatureOfCodeTest.Model.PhysicalConstants.AU;
+                
+                systemData = new SystemFetchData
                 {
-                    SemiMajorAxis = semiMajor,
-                    Eccentricity = 0.0, // Keeping it circular for simple sine fitting
-                    Inclination = 0,
-                    ArgumentOfPeriapsis = 0,
-                    MeanAnomalyAtEpoch = 0,
-                    EpochTime = 0
-                }
-            };
+                    PlanetID = -1,
+                    HostStar = new Star { Name = "Fallback Star", Mass = tempStarMass, Position = Vector2.Zero },
+                    OrbitingPlanet = new Planet 
+                    { 
+                        Name = "Fallback Planet", Mass = tempPlanetMass, 
+                        Orbit = new OrbitalElements { SemiMajorAxis = tempSemiMajor, Eccentricity = 0, Inclination = 0, ArgumentOfPeriapsis = 0 }
+                    }
+                };
+            }
+            
+            currentPlanetID = systemData.PlanetID;
+            Star sun = systemData.HostStar;
+            Planet planet = systemData.OrbitingPlanet;
+            
+            double earthMass = 5.972e24;
+            double solarMass = NatureOfCodeTest.Model.PhysicalConstants.SolarMass; 
+            
+            double starMass = (sun.Mass <= 0 ? 1 : sun.Mass) * solarMass;
+            sun.Mass = starMass;
+
+            double planetMass = (planet.Mass <= 0 ? 1 : planet.Mass) * earthMass;
+            planet.Mass = planetMass;
+
+            double semiMajorAU = planet.Orbit.SemiMajorAxis;
+            if (semiMajorAU <= 0) semiMajorAU = 0.1 + random.NextDouble() * 1.4;
+            double semiMajor = semiMajorAU * NatureOfCodeTest.Model.PhysicalConstants.AU;
+            planet.Orbit.SemiMajorAxis = semiMajor;
+            planet.Orbit.Eccentricity = 0.0; // Keeping it circular for simple sine fitting
+
             planet.Position = new Vector2((float)semiMajor, 0);
 
             engine = new SimulationEngine
@@ -274,7 +286,7 @@ namespace NatureOfCodeTest
                 lblScore.Text = $"Poor Fit.\nScore: {scorePercent:F1}/100\nTry adjusting Amplitude or Period.";
             }
 
-            repo.AddResult(scorePercent, timeTakenSeconds);
+            repo.AddResult(currentPlanetID, scorePercent, timeTakenSeconds);
         }
 
         private void PnlGraph_Paint(object sender, PaintEventArgs e)

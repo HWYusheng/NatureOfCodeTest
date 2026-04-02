@@ -1,4 +1,4 @@
-﻿using NatureOfCodeTest.Model;
+using NatureOfCodeTest.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,13 @@ using System.Threading.Tasks;
 
 namespace NatureOfCodeTest
 {
+    public class SystemFetchData
+    {
+        public Star HostStar { get; set; }
+        public Planet OrbitingPlanet { get; set; }
+        public int PlanetID { get; set; }
+    }
+
     internal class CelesBodyRepositary
     {
         string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellerWobble.accdb";
@@ -135,6 +142,83 @@ namespace NatureOfCodeTest
                 }
             }
             return CelesBodies;
+        }
+
+        public SystemFetchData GetRandomSystem()
+        {
+            SystemFetchData data = new SystemFetchData();
+            List<int> planetIds = new List<int>();
+            string sqlGetIds = "SELECT PlanetID FROM tblPlanet";
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            {
+                conn.Open();
+                using (OleDbCommand cmd = new OleDbCommand(sqlGetIds, conn))
+                {
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            planetIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+                
+                if (planetIds.Count == 0) return null;
+
+                Random rnd = new Random();
+                int selectedPlanetId = planetIds[rnd.Next(planetIds.Count)];
+
+                string sqlPlanet = "SELECT * FROM tblPlanet WHERE PlanetID = ?";
+                int starId = -1;
+                using (OleDbCommand cmd = new OleDbCommand(sqlPlanet, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PlanetID", selectedPlanetId);
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            data.PlanetID = reader.GetInt32(0);
+                            starId = reader.GetInt32(1);
+                            
+                            Planet p = new Planet();
+                            p.Name = reader.GetString(2);
+                            p.Mass = Convert.ToDouble(reader.GetValue(3)); 
+                            double a = Convert.ToDouble(reader.GetValue(4)); 
+                            double e = Convert.ToDouble(reader.GetValue(5));
+                            double i = Convert.ToDouble(reader.GetValue(6));
+                            double w = Convert.ToDouble(reader.GetValue(7));
+                            
+                            p.Orbit = new OrbitalElements
+                            {
+                                SemiMajorAxis = a,
+                                Eccentricity = e,
+                                Inclination = i,
+                                ArgumentOfPeriapsis = w
+                            };
+                            data.OrbitingPlanet = p;
+                        }
+                    }
+                }
+
+                string sqlStar = "SELECT * FROM tblStar WHERE StarID = ?";
+                using (OleDbCommand cmd = new OleDbCommand(sqlStar, conn))
+                {
+                    cmd.Parameters.AddWithValue("@StarID", starId);
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Star s = new Star();
+                            s.Name = reader.GetString(1);
+                            s.Mass = Convert.ToDouble(reader.GetValue(2)); 
+                            s.Luminosity = Convert.ToDouble(reader.GetValue(3));
+                            s.Position = new Vector2(0, 0); 
+                            data.HostStar = s;
+                        }
+                    }
+                }
+            }
+            return data;
         }
         //pasted json string to json2csharp
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);

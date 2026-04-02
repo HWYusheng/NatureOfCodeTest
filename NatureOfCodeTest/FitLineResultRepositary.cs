@@ -25,14 +25,15 @@ namespace NatureOfCodeTest
     {
         private string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellerWobble.accdb";
 
-        public void AddResult(double score, int timeTakenSec)
+        public void AddResult(int planetID, double score, int timeTakenSec)
         {
             int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
-            string sql = "INSERT INTO Simulations (Timestamp, FitScore, TimeTakenSec, IsFitLineGame) VALUES (?, ?, ?, ?)";
+            string sql = "INSERT INTO Simulations (PlanetID, Timestamp, FitScore, TimeTakenSec, IsFitLineGame) VALUES (?, ?, ?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
             {
+                cmd.Parameters.AddWithValue("@PlanetID", planetID);
                 cmd.Parameters.AddWithValue("@Timestamp", unixTimestamp);
                 cmd.Parameters.AddWithValue("@FitScore", score);
                 cmd.Parameters.AddWithValue("@TimeTakenSec", timeTakenSec);
