@@ -21,6 +21,7 @@ namespace NatureOfCodeTest
         private Label lblPhase;
 
         private Button btnNewGame;
+        private Button btnRetry;
         private Button btnSubmit;
         private Button btnResultBoard;
         private Label lblTimer;
@@ -101,11 +102,15 @@ namespace NatureOfCodeTest
             this.Controls.Add(trkPhase);
 
             // Buttons
-            btnNewGame = new Button { Location = new Point(580, 420), Size = new Size(150, 40), Text = "New System", ForeColor = Color.YellowGreen, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnNewGame = new Button { Location = new Point(520, 420), Size = new Size(140, 40), Text = "New System", ForeColor = Color.YellowGreen, Font = new Font("Arial", 10, FontStyle.Bold) };
             btnNewGame.Click += (s, e) => StartNewGame();
             this.Controls.Add(btnNewGame);
 
-            btnSubmit = new Button { Location = new Point(740, 420), Size = new Size(150, 40), Text = "Submit Fit", ForeColor = Color.Black, Font = new Font("Arial", 10, FontStyle.Bold), BackColor = Color.LightGreen };
+            btnRetry = new Button { Location = new Point(670, 420), Size = new Size(140, 40), Text = "Retry System", ForeColor = Color.Orange, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnRetry.Click += (s, e) => RetryCurrentGame();
+            this.Controls.Add(btnRetry);
+
+            btnSubmit = new Button { Location = new Point(820, 420), Size = new Size(140, 40), Text = "Submit Fit", ForeColor = Color.Black, Font = new Font("Arial", 10, FontStyle.Bold), BackColor = Color.LightGreen };
             btnSubmit.Click += BtnSubmit_Click;
             this.Controls.Add(btnSubmit);
             
@@ -122,6 +127,7 @@ namespace NatureOfCodeTest
 
         private void StartNewGame()
         {
+            btnSubmit.Enabled = true;
             lblScore.Text = "Fit the line to the data points!\nAdjust sliders and click Submit.";
             lblScore.ForeColor = Color.LightSkyBlue;
 
@@ -236,10 +242,40 @@ namespace NatureOfCodeTest
             pnlGraph.Invalidate();
         }
 
+        private void RetryCurrentGame()
+        {
+            if (noisyDataPoints.Count == 0) return;
+
+            btnSubmit.Enabled = true;
+            lblScore.Text = "Fit the line to the data points!\nAdjust sliders and click Submit.";
+            lblScore.ForeColor = Color.LightSkyBlue;
+
+            timeTakenSeconds = 0;
+            lblTimer.Text = "Time: 0s";
+            gameTimer.Start();
+
+            // Setup new random sliders values to let them try again
+            trkAmplitude.Value = random.Next(10, 200);
+            
+            double periodDays = windowSizeDays / 2.5;
+            int pMin = Math.Max(10, (int)(periodDays * 0.5));
+            int pMax = (int)(periodDays * 2.5);
+            trkPeriod.Value = random.Next(pMin, pMax);
+
+            trkPhase.Value = random.Next(0, 360);
+            
+            lblAmp.Text = $"Amplitude: {trkAmplitude.Value}%";
+            lblPeriod.Text = $"Period: {trkPeriod.Value} Days";
+            lblPhase.Text = $"Phase: {trkPhase.Value}°";
+
+            pnlGraph.Invalidate();
+        }
+
         private void BtnSubmit_Click(object sender, EventArgs e)
         {
             if (noisyDataPoints.Count == 0 || trueMaxVel == 0) return;
 
+            btnSubmit.Enabled = false;
             gameTimer.Stop();
 
             // Calculate actual error vs User curve

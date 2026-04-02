@@ -56,7 +56,6 @@ namespace NatureOfCodeTest
             var displayData = results.Select(r => new {
                 AttemptID = r.SimulationID,
                 PlanetName = r.PlanetName,
-                Date = r.DatePlayed.ToString("yyyy-MM-dd HH:mm:ss"),
                 Score = r.FitScore.ToString("F1") + " / 100",
                 Time_Taken = r.TimeTakenSec + "s"
             }).ToList();

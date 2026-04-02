@@ -47,7 +47,7 @@ namespace NatureOfCodeTest
         public List<FitLineResult> GetAllResults()
         {
             List<FitLineResult> results = new List<FitLineResult>();
-            string sql = "SELECT s.SimulationID, s.[Timestamp], s.FitScore, s.TimeTakenSec, p.pl_Name FROM Simulations s INNER JOIN tblPlanet p ON s.PlanetID = p.PlanetID WHERE s.IsFitLineGame = True ORDER BY s.SimulationID DESC";
+            string sql = "SELECT s.SimulationID, s.FitScore, s.TimeTakenSec, p.pl_Name FROM Simulations s LEFT JOIN tblPlanet p ON s.PlanetID = p.PlanetID WHERE s.IsFitLineGame = True ORDER BY s.SimulationID DESC";
             
             try
             {
@@ -62,10 +62,9 @@ namespace NatureOfCodeTest
                             results.Add(new FitLineResult
                             {
                                 SimulationID = reader.GetInt32(0),
-                                Timestamp = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                                FitScore = reader.IsDBNull(2) ? 0.0 : reader.GetDouble(2),
-                                TimeTakenSec = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                                PlanetName = reader.IsDBNull(4) ? "Unknown" : reader.GetString(4)
+                                FitScore = reader.IsDBNull(1) ? 0.0 : reader.GetDouble(1),
+                                TimeTakenSec = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
+                                PlanetName = reader.IsDBNull(3) ? "Unknown" : reader.GetString(3)
                             });
                         }
                     }
