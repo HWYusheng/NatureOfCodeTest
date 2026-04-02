@@ -87,7 +87,7 @@ namespace NatureOfCodeTest
             this.Controls.Add(trkPhase);
 
             // Buttons
-            btnNewGame = new Button { Location = new Point(580, 420), Size = new Size(150, 40), Text = "New System", ForeColor = Color.Black, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnNewGame = new Button { Location = new Point(580, 420), Size = new Size(150, 40), Text = "New System", ForeColor = Color.YellowGreen, Font = new Font("Arial", 10, FontStyle.Bold) };
             btnNewGame.Click += (s, e) => StartNewGame();
             this.Controls.Add(btnNewGame);
 
