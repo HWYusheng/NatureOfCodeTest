@@ -133,7 +133,6 @@ namespace NatureOfCodeTest
             if (systemData == null)
             {
                 currentPlanetID = -1;
-                // Fallback if db is empty or error
                 double tempStarMass = (0.5 + random.NextDouble() * 1.5) * NatureOfCodeTest.Model.PhysicalConstants.SolarMass;
                 double tempPlanetMass = (0.5 + random.NextDouble() * 19.5) * 1.898e27;
                 double tempSemiMajor = (0.1 + random.NextDouble() * 1.4) * NatureOfCodeTest.Model.PhysicalConstants.AU;
