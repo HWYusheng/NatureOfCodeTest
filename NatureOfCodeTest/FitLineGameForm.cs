@@ -106,14 +106,14 @@ namespace NatureOfCodeTest
             btnSubmit.Click += BtnSubmit_Click;
             this.Controls.Add(btnSubmit);
             
-            btnResultBoard = new Button { Location = new Point(420, 420), Size = new Size(150, 40), Text = "Result Board", ForeColor = Color.White, BackColor = Color.DimGray, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnResultBoard = new Button { Location = new Point(800, 480), Size = new Size(130, 40), Text = "Result Board", ForeColor = Color.White, BackColor = Color.DimGray, Font = new Font("Arial", 10, FontStyle.Bold) };
             btnResultBoard.Click += (s, e) => { new FitLineResultBoardForm().ShowDialog(); };
             this.Controls.Add(btnResultBoard);
 
-            lblScore = new Label { Location = new Point(580, 480), Size = new Size(310, 80), Text = "Fit the line to the data points!", Font = new Font("Arial", 12, FontStyle.Bold), ForeColor = Color.LightSkyBlue };
+            lblScore = new Label { Location = new Point(580, 490), Size = new Size(310, 80), Text = "Fit the line to the data points!", Font = new Font("Arial", 12, FontStyle.Bold), ForeColor = Color.LightSkyBlue };
             this.Controls.Add(lblScore);
 
-            lblTimer = new Label { Location = new Point(420, 480), Size = new Size(150, 30), Text = "Time: 0s", ForeColor = Color.White, Font = new Font("Arial", 10, FontStyle.Bold) };
+            lblTimer = new Label { Location = new Point(580, 470), Size = new Size(150, 30), Text = "Time: 0s", ForeColor = Color.White, Font = new Font("Arial", 10, FontStyle.Bold) };
             this.Controls.Add(lblTimer);
         }
 
