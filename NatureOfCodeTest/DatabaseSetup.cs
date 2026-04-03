@@ -13,57 +13,35 @@ namespace NatureOfCodeTest
             {
                 conn.Open();
 
-                // 1. Create Users Table
-                try
-                {
-                    string createUsers = "CREATE TABLE Users (UserID AUTOINCREMENT PRIMARY KEY, Username VARCHAR(255) UNIQUE, PasswordHash VARCHAR(255))";
-                    using (OleDbCommand cmd = new OleDbCommand(createUsers, conn))
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                catch (OleDbException)
-                {
-                    // Table already exists, ignore
-                }
+                // 1. Create Users table if not exists
+                TryExecute(conn, "CREATE TABLE Users (UserID AUTOINCREMENT PRIMARY KEY, Username VARCHAR(255), PasswordHash VARCHAR(255))");
 
-                // 2. Add PlayerID to Simulations
-                try
-                {
-                    string addCol = "ALTER TABLE Simulations ADD COLUMN PlayerID INT";
-                    using (OleDbCommand cmd = new OleDbCommand(addCol, conn))
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                catch (OleDbException)
-                {
-                    // Column already exists, ignore
-                }
-                
-                // Set default for existing records in Simulations to prevent null comparisons from failing
-                try
-                {
-                    string updateOld = "UPDATE Simulations SET PlayerID = -1 WHERE PlayerID IS NULL";
-                    using (OleDbCommand cmd = new OleDbCommand(updateOld, conn))
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                catch { }
+                // 2. Add UserID column to Simulations (the FK column)
+                TryExecute(conn, "ALTER TABLE Simulations ADD COLUMN UserID INTEGER");
 
-                // 3. Clear temporary guest runs 
-                try
+                // 3. If old PlayerID column exists, migrate data across then we leave it (Access can't drop columns via SQL)
+                TryExecute(conn, "UPDATE Simulations SET UserID = PlayerID WHERE UserID IS NULL AND PlayerID IS NOT NULL");
+
+                // 4. Tag any remaining null rows as guest (-1)
+                TryExecute(conn, "UPDATE Simulations SET UserID = -1 WHERE UserID IS NULL");
+
+                // 5. Delete all guest / unowned rows from previous sessions
+                TryExecute(conn, "DELETE FROM Simulations WHERE UserID <= 0");
+            }
+        }
+
+        private static void TryExecute(OleDbConnection conn, string sql)
+        {
+            try
+            {
+                using (OleDbCommand cmd = new OleDbCommand(sql, conn))
                 {
-                    string clearGuests = "DELETE FROM Simulations WHERE PlayerID <= 0";
-                    using (OleDbCommand cmd = new OleDbCommand(clearGuests, conn))
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.ExecuteNonQuery();
                 }
-                catch (OleDbException)
-                {
-                }
+            }
+            catch (OleDbException)
+            {
+                // Silently ignore: column/table already exists, or optional migration step not applicable
             }
         }
     }
