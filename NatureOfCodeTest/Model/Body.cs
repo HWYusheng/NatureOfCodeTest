@@ -18,29 +18,11 @@ namespace NatureOfCodeTest
         public Vector2 position { get; private set; } = new Vector2(); 
         public Vector2 velocity { get; private set; }
         public Vector2 acceleration { get; private set; }
-        Vector2 mouse = new Vector2();
         SolidBrush brushesColor;
         int formWidth, formHeight;
         Form frm;
         float mass, radius, G = 1f;
         static Random rnd = new Random();
-        //private void CallAPI
-        //    {
-        //    // Source - https://stackoverflow.com/a
-        //    // Posted by Ronald Ramos, modified by community. See post 'Timeline' for change history
-        //    // Retrieved 2026-01-06, License - CC BY-SA 4.0
-
-        //    HttpClient httpClient = new HttpClient();
-
-        ////specify to use TLS 1.2 as default connection
-        //System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-        //httpClient.BaseAddress = new Uri("https://foobar.com/");
-        //httpClient.DefaultRequestHeaders.Accept.Clear();
-        //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-    
-        //var task = httpClient.PostAsXmlAsync<DeviceRequest>("api/SaveData", request);
-        //    }
         public Body(int width, int height, Form theForm, Vector2 pos, Vector2 velo, float m, float dia)
         {
             formHeight = height;
@@ -66,12 +48,6 @@ namespace NatureOfCodeTest
             float strength = -(G * this.mass * AnotherBody.mass) / (distanceSq);
             gforce = Vector2.Normalize(gforce) * strength;
             this.ApplyForce(gforce);
-            //let force = p5.Vector.sub(this.pos, mover.pos);
-            //let distanceSq = constrain(force.magSq(), 100, 1000);
-            //let G = 1;
-            //let strength = (G * (this.mass * mover.mass)) / distanceSq;
-            //force.setMag(strength);
-            //mover.applyForce(force);
         }
         public void Update()
         {

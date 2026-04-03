@@ -291,17 +291,14 @@ namespace NatureOfCodeTest
                 double timeSec = pt.X * 86400.0;
                 double userPeriodSec = userPeriodDays * 86400.0;
 
-                // Engine initial config uses vx = -sin(E), so the fundamental wave is a negative sine.
-                // We'll let user's wave be evaluated standard way to allow them to fit it.
-                // We use standard positive sine: v(t) = A * sin(2pi * t / P + phase)
-                double userRV = userAmp * Math.Sin(2 * Math.PI * timeSec / userPeriodSec + userPhaseRad);
+                // Engine initial config uses vx = -sin(E), so the base wave is a negative sine.
+                double userRV = userAmp * -Math.Sin(2 * Math.PI * timeSec / userPeriodSec + userPhaseRad);
                 
                 double rvDiff = Math.Abs(userRV - pt.Y);
                 totalError += rvDiff;
             }
 
             double meanError = totalError / noisyDataPoints.Count;
-            // Max tolerable error is ~ amp
             double scorePercent = 100.0 * (1.0 - (meanError / (trueMaxVel * 1.5)));
             if (scorePercent < 0) scorePercent = 0;
 
@@ -409,18 +406,6 @@ namespace NatureOfCodeTest
             g.DrawString($"Window: {displayMaxTimeDays:F1} days", font, brush, w - 150, h - 20);
         }
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // FitLineGameForm
-            // 
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Name = "FitLineGameForm";
-            this.Load += new System.EventHandler(this.FitLineGameForm_Load);
-            this.ResumeLayout(false);
-
-        }
         private void EnableDoubleBuffering()
         {
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);

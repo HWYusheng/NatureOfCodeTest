@@ -130,14 +130,14 @@ namespace NatureOfCodeTest
             float starX = centerX + (starPos.X / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
             float starY = centerY - (starPos.Y / (float)NatureOfCodeTest.Model.PhysicalConstants.AU * scaleAUToPixels * wobbleAmplify);
 
-            // Draw Observer (Telescope) to the left
+            // Draw Observer to the left
             float observerX = 60;
             float observerY = centerY;
             g.FillRectangle(Brushes.DimGray, observerX - 20, observerY - 5, 30, 10); // Telescope body
             g.FillEllipse(Brushes.Silver, observerX - 25, observerY - 8, 10, 16); // Lens
             g.DrawString("OBSERVER\n(Telescope)", this.Font, Brushes.LightSkyBlue, observerX - 30, observerY + 15);
 
-            // Light Wave Visualization (Unified Sine Wave based on current RV)
+            // Light wave visualisation from Star to Observer
             if (engine.Samples.Count > 0)
             {
                 double currentRV = engine.Samples.Last().RadialVelocity;
