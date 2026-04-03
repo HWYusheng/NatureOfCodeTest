@@ -21,5 +21,26 @@
       <FileName>ColorUtils.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="NatureOfCodeTest.Model.CelestialBody" Collapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAgAAAAAAQAAAAAAAAAAAAAAACEAAA=</HashCode>
+      <FileName>Class\CelestialBody.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NatureOfCodeTest.Model.Star" Collapsed="true">
+    <Position X="7" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Class\CelestialBody.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NatureOfCodeTest.Model.Planet" Collapsed="true">
+    <Position X="4.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class\CelestialBody.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -108,7 +108,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Class\Body.cs" />
     <Compile Include="Class\CelestialBody.cs" />
     <Compile Include="Class\KeplerSolver.cs" />
     <Compile Include="Class\OrbitalElements.cs" />
