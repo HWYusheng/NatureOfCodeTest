@@ -30,14 +30,13 @@ namespace NatureOfCodeTest
         {
            
 
-            string sql = "INSERT INTO Simulations (PlanetID, FitScore, TimeTakenSec, IsFitLineGame) VALUES (?, ?, ?, ?)";
+            string sql = "INSERT INTO Simulations (PlanetID, FitScore, TimeTakenSec) VALUES (?, ?, ?)";
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             using (OleDbCommand cmd = new OleDbCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@PlanetID", planetID);
                 cmd.Parameters.AddWithValue("@FitScore", score);
                 cmd.Parameters.AddWithValue("@TimeTakenSec", timeTakenSec);
-                cmd.Parameters.AddWithValue("@IsFitLineGame", true);
                 
                 conn.Open();
                 cmd.ExecuteNonQuery();
