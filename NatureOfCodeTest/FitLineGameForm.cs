@@ -24,7 +24,9 @@ namespace NatureOfCodeTest
         private Button btnRetry;
         private Button btnSubmit;
         private Button btnResultBoard;
+        private Button btnLogin;
         private Label lblTimer;
+        private Label lblUserStatus;
         private System.Windows.Forms.Timer gameTimer;
         private int timeTakenSeconds;
         private FitLineResultRepositary repo;
@@ -117,6 +119,31 @@ namespace NatureOfCodeTest
             btnResultBoard = new Button { Location = new Point(800, 480), Size = new Size(130, 40), Text = "Result Board", ForeColor = Color.White, BackColor = Color.DimGray, Font = new Font("Arial", 10, FontStyle.Bold), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             btnResultBoard.Click += (s, e) => { new FitLineResultBoardForm().ShowDialog(); };
             this.Controls.Add(btnResultBoard);
+
+            // Optional Login / Logout button
+            btnLogin = new Button
+            {
+                Location = new Point(600, 480),
+                Size = new Size(150, 36),
+                Text = "Login / Register",
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(0, 100, 160),
+                Font = new Font("Arial", 9, FontStyle.Bold),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
+            };
+            btnLogin.Click += BtnLoginToggle_Click;
+            this.Controls.Add(btnLogin);
+
+            lblUserStatus = new Label
+            {
+                Location = new Point(170, 487),
+                Size = new Size(240, 22),
+                Text = "Playing as: Guest",
+                ForeColor = Color.Gray,
+                Font = new Font("Arial", 9, FontStyle.Italic),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
+            };
+            this.Controls.Add(lblUserStatus);
 
             lblScore = new Label { Location = new Point(520, 490), Size = new Size(270, 80), Text = "Fit the line to the data points!", Font = new Font("Arial", 12, FontStyle.Bold), ForeColor = Color.LightSkyBlue, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             this.Controls.Add(lblScore);
@@ -271,6 +298,46 @@ namespace NatureOfCodeTest
             pnlGraph.Invalidate();
         }
 
+        private void BtnLoginToggle_Click(object sender, EventArgs e)
+        {
+            if (UserSession.IsLoggedIn)
+            {
+                // Logout
+                UserSession.CurrentUserID = -1;
+                UserSession.CurrentUsername = "Guest";
+                btnLogin.Text = "Login / Register";
+                btnLogin.BackColor = Color.FromArgb(0, 100, 160);
+                lblUserStatus.Text = "Playing as: Guest";
+                lblUserStatus.ForeColor = Color.Gray;
+            }
+            else
+            {
+                using (var loginForm = new LoginForm())
+                {
+                    loginForm.ShowDialog(this);
+                }
+                UpdateLoginUI();
+            }
+        }
+
+        private void UpdateLoginUI()
+        {
+            if (UserSession.IsLoggedIn)
+            {
+                btnLogin.Text = "Logout";
+                btnLogin.BackColor = Color.FromArgb(160, 60, 60);
+                lblUserStatus.Text = $"Playing as: {UserSession.CurrentUsername}";
+                lblUserStatus.ForeColor = Color.LightGreen;
+            }
+            else
+            {
+                btnLogin.Text = "Login / Register";
+                btnLogin.BackColor = Color.FromArgb(0, 100, 160);
+                lblUserStatus.Text = "Playing as: Guest";
+                lblUserStatus.ForeColor = Color.Gray;
+            }
+        }
+
         private void BtnSubmit_Click(object sender, EventArgs e)
         {
             if (noisyDataPoints.Count == 0 || trueMaxVel == 0) return;
@@ -411,6 +478,24 @@ namespace NatureOfCodeTest
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
         }
         private void FitLineGameForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // FitLineGameForm
+            // 
+            this.ClientSize = new System.Drawing.Size(274, 229);
+            this.Name = "FitLineGameForm";
+            this.Load += new System.EventHandler(this.FitLineGameForm_Load_1);
+            this.ResumeLayout(false);
+
+        }
+
+        private void FitLineGameForm_Load_1(object sender, EventArgs e)
         {
 
         }

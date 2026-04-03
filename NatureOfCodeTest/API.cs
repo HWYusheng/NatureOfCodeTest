@@ -30,7 +30,7 @@ namespace NatureOfCodeTest
             string returnedStarData = await GetDataAsync(StarURL);
             var planetsCol = JsonConvert.DeserializeObject<List<PlanetFJson>>(returnedPlanetData);
             var starsCol = JsonConvert.DeserializeObject<List<StarFJson>>(returnedStarData);
-            celesBodyRepositary.DeleteAllSQL();
+            //celesBodyRepositary.DeleteAllSQL();
             foreach (var item in starsCol)
             {
                 Star _star = new Star

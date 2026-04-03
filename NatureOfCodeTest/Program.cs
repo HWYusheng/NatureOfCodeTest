@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -17,6 +17,10 @@ namespace NatureOfCodeTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
+            // Initialize DB schema and clear old guest runs
+            DatabaseSetup.InitializeDb();
+            
             Application.Run(new Form1());
         }
     }
