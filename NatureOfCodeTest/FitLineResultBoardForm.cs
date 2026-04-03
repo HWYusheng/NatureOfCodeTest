@@ -55,6 +55,7 @@ namespace NatureOfCodeTest
             // Format for display
             var displayData = results.Select(r => new {
                 AttemptID = r.SimulationID,
+                StarSys = r.HostStarName,
                 PlanetName = r.PlanetName,
                 Score = r.FitScore.ToString("F1") + " / 100",
                 Time_Taken = r.TimeTakenSec + "s"
