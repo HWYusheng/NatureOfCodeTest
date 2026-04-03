@@ -23,6 +23,7 @@ namespace NatureOfCodeTest
 
         private static void TryExecute(OleDbConnection conn, string sql)
         {
+            // try to execute the SQL.
             try
             {
                 using (OleDbCommand cmd = new OleDbCommand(sql, conn))
@@ -32,7 +33,7 @@ namespace NatureOfCodeTest
             }
             catch (OleDbException)
             {
-                // Silently ignore: column/table already exists, or optional migration step not applicable
+               
             }
         }
     }
