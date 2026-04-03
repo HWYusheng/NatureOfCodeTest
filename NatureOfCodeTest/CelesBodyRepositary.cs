@@ -88,7 +88,7 @@ namespace NatureOfCodeTest
         }
         public void DeleteAllSQL()
         {
-            List<string> tblList = new List<string> { "tblStar", "tblPlanet", "Simulations" };
+            List<string> tblList = new List<string> { "tblStar", "tblPlanet" };
             foreach (var item in tblList)
             {
                 string deleteAllSql = "DELETE FROM " + item;
