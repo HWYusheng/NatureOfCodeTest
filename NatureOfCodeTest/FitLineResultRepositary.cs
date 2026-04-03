@@ -46,7 +46,7 @@ namespace NatureOfCodeTest
         public List<FitLineResult> GetAllResults()
         {
             List<FitLineResult> results = new List<FitLineResult>();
-            string sql = "SELECT s.SimulationID, s.FitScore, s.TimeTakenSec, p.pl_Name FROM Simulations s LEFT JOIN tblPlanet p ON s.PlanetID = p.PlanetID WHERE s.IsFitLineGame = True ORDER BY s.SimulationID DESC";
+            string sql = "SELECT s.SimulationID, s.FitScore, s.TimeTakenSec, p.pl_Name FROM Simulations s LEFT JOIN tblPlanet p ON s.PlanetID = p.PlanetID ORDER BY s.SimulationID DESC";
             
             try
             {
