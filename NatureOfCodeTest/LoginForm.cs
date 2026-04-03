@@ -36,7 +36,7 @@ namespace NatureOfCodeTest
             this.MinimizeBox = false;
             this.BackColor = Color.FromArgb(25, 25, 40);
             this.ForeColor = Color.White;
-
+            // Lables and Textboxes
             lblTitle = new Label
             {
                 Text = "FitLine Game Login",
@@ -83,7 +83,8 @@ namespace NatureOfCodeTest
                 TextAlign = ContentAlignment.MiddleCenter
             };
             this.Controls.Add(lblStatus);
-
+            
+            // Buttons
             btnLogin = new Button
             {
                 Text = "Login",
@@ -260,6 +261,12 @@ namespace NatureOfCodeTest
             UserSession.CurrentUsername = "Guest";
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
