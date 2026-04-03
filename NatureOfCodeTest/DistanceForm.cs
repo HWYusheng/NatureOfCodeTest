@@ -11,8 +11,6 @@ namespace NatureOfCodeTest
     {
         public List<SimulationSample> Data { get; set; }
         
-        // Base distance: 4.22 Light Years (Proxima Centauri)
-        // 1 LY = 9.461e15 meters
         private const double BaseDistance = 4.22 * 9.461e15;
 
         public DistanceForm()
@@ -114,6 +112,11 @@ namespace NatureOfCodeTest
         {
             lblXScale.Text = $"X-Axis Scale: {trkXScale.Value} Days";
             pnlDistanceGraph.Invalidate();
+        }
+
+        private void DistanceForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

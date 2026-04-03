@@ -66,19 +66,6 @@ namespace NatureOfCodeTest
             lblAverages.Text = $"Average Score: {avgs.AvgScore:F1} | Average Time: {avgs.AvgTime:F1}s";
         }
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // FitLineResultBoardForm
-            // 
-            this.ClientSize = new System.Drawing.Size(274, 229);
-            this.Name = "FitLineResultBoardForm";
-            this.Load += new System.EventHandler(this.FitLineResultBoardForm_Load);
-            this.ResumeLayout(false);
-
-        }
-
         private void FitLineResultBoardForm_Load(object sender, EventArgs e)
         {
 

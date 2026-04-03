@@ -251,7 +251,7 @@ namespace NatureOfCodeTest
             {
                 distanceForm = new DistanceForm();
                 distanceForm.Data = engine.Samples;
-                distanceForm.Owner = this; // Set owner to main form
+                distanceForm.Owner = this;
                 distanceForm.Show();
             }
             else
@@ -264,7 +264,7 @@ namespace NatureOfCodeTest
         {
             if (engine != null)
             {
-                // Range: 1-50, maps to 0.1 to 5.0 days per step
+                // Range: 1-50 = 0.1 to 5.0 days per step
                 engine.TimeStep = trkSpeed.Value * 8640.0;
                 lblSpeed.Text = $"Simulation Speed: {trkSpeed.Value * 0.1:F1} Days/Step";
             }

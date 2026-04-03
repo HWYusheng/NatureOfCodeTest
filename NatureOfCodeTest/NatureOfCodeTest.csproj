@@ -112,10 +112,12 @@
     <Compile Include="Model\RadialVelocityCalculator.cs" />
     <Compile Include="Model\SimulationEngine.cs" />
     <Compile Include="Model\SimulationSample.cs" />
-    <Compile Include="Plotting.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColorUtils.cs" />
+    <EmbeddedResource Include="DistanceForm.resx">
+      <DependentUpon>DistanceForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FitLineGameForm.resx">
       <DependentUpon>FitLineGameForm.cs</DependentUpon>
     </EmbeddedResource>
