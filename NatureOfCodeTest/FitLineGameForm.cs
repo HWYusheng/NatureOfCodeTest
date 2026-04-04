@@ -136,7 +136,7 @@ namespace NatureOfCodeTest
 
             lblUserStatus = new Label
             {
-                Location = new Point(170, 487),
+                Location = new Point(600, 450),
                 Size = new Size(240, 22),
                 Text = "Playing as: Guest",
                 ForeColor = Color.Gray,
