@@ -12,9 +12,9 @@ namespace NatureOfCodeTest.Model
         private KeplerSolver _solver = new KeplerSolver();
         public void ComputePlanetState(Planet planet, Star star, double time)
         {
-            // Logic tính toán vị trí dựa trên Keplerian Elements
-            // 1. Tính Mean Anomaly -> Eccentric Anomaly -> True Anomaly
-            // 2. Chuyển đổi sang tọa độ Descartes (X, Y)
+            // Logic to calculate position base on Keplerian Elements
+            // 1. Calculate Mean Anomaly -> Eccentric Anomaly -> True Anomaly
+            // 2. Convert to Descartes (X, Y)
             // Calculate base on Keplerian Elements: 
             // 1. Mean anomaly -> eccentric ano -> true ano
             var orbit = planet.Orbit;
@@ -51,7 +51,7 @@ namespace NatureOfCodeTest.Model
             // 6. Update relative position coord to the Star
             planet.Position = new Vector2((float)(star.Position.X + x_final), (float)(star.Position.Y + y_final));
 
-            // 7. Calc vận tốc tức thời (Velocity) - dy/dx of position
+            // 7. Calc instaneous Velocity - dy/dx of position
             // v = sqrt(G * M_total / a) * [-sinE, sqrt(1-e^2)*cosE] / (1 - e*cosE)
             double v_factor = Math.Sqrt(PhysicalConstants.G * totalMass / orbit.SemiMajorAxis) / (1 - orbit.Eccentricity * cosE);
             double vx_orbital = -v_factor * sinE;
