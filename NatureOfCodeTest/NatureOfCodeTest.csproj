@@ -88,7 +88,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FitLineResultRepositary.cs" />
+    <Compile Include="Class\FitLineResultRepositary.cs" />
     <Compile Include="FitLineResultBoardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,9 +98,9 @@
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UserSession.cs" />
-    <Compile Include="DatabaseSetup.cs" />
-    <Compile Include="API.cs" />
+    <Compile Include="Class\UserSession.cs" />
+    <Compile Include="Class\DatabaseSetup.cs" />
+    <Compile Include="Class\API.cs" />
     <Compile Include="CelesBodyRepositary.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -116,9 +116,9 @@
     <Compile Include="Class\RadialVelocityCalculator.cs" />
     <Compile Include="Class\SimulationEngine.cs" />
     <Compile Include="Class\SimulationSample.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Class\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ColorUtils.cs" />
+    <Compile Include="Class\ColorUtils.cs" />
     <EmbeddedResource Include="DistanceForm.resx">
       <DependentUpon>DistanceForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -1,45 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="NatureOfCodeTest.Form1">
-    <Position X="1" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAACABACAAAAEAAADACAgSAECEEEEEAC4AQASAMAA=</HashCode>
-      <FileName>Form1.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="NatureOfCodeTest.Model.SimulationEngine">
-    <Position X="2.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAIAAAAgoIAAgAAAAFA=</HashCode>
-      <FileName>Class\SimulationEngine.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="NatureOfCodeTest.ColorUtils">
-    <Position X="2.75" Y="4" Width="2.25" />
+    <Position X="4" Y="2.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAQCAABA=</HashCode>
-      <FileName>ColorUtils.cs</FileName>
+      <FileName>Class\ColorUtils.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NatureOfCodeTest.Model.CelestialBody" Collapsed="true">
-    <Position X="6" Y="0.5" Width="1.5" />
+  <Class Name="NatureOfCodeTest.RadialVelocityForm">
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAACAgAAAAAAQAAAAAAAAAAAAAAACEAAA=</HashCode>
-      <FileName>Class\CelestialBody.cs</FileName>
+      <HashCode>QIAAAAABASAEAgAAAAKAAAACAACAARAAAABAAAAAAAA=</HashCode>
+      <FileName>RadialVelocityForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NatureOfCodeTest.Model.Star" Collapsed="true">
-    <Position X="7" Y="1.75" Width="1.5" />
+  <Class Name="NatureOfCodeTest.Model.SimulationSample">
+    <Position X="4" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Class\CelestialBody.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="NatureOfCodeTest.Model.Planet" Collapsed="true">
-    <Position X="4.75" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>gAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Class\CelestialBody.cs</FileName>
+      <HashCode>AgAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAgAAAAAQA=</HashCode>
+      <FileName>Class\SimulationSample.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
