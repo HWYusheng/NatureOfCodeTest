@@ -61,7 +61,7 @@ namespace NatureOfCodeTest
                 ? "WHERE s.UserID = " + UserSession.CurrentUserID
                 : "WHERE (s.UserID = -1 OR s.UserID IS NULL)";
 
-            // JOIN chain: Simulations → tblPlanet → tblStar → Users
+            // JOIN chain: Simulations -> tblPlanet -> tblStar -> Users
             string sql =
                 "SELECT s.SimulationID, s.FitScore, s.TimeTakenSec, " +
                 "       p.pl_Name, st.HostName, " +
