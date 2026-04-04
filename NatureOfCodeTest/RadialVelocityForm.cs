@@ -54,7 +54,7 @@ namespace NatureOfCodeTest
             g.DrawLine(axisPen, marginLeft, h - marginBottom, w - marginRight, h - marginBottom); // X Axis
 
             // Determine scales using TrackBars
-            double windowSize = trkXScale.Value * 86400.0; // Show window size from TrackBar
+            double windowSize = trkXScale.Value * 86400.0;
             double maxTime = Data[Data.Count - 1].Time;
             double minTime = Math.Max(Data[0].Time, maxTime - windowSize);
             
@@ -62,13 +62,13 @@ namespace NatureOfCodeTest
             float displayMinTime = (float)minTime;
 
             // Velocity range: use TrackBar for scaling (1 to 1000)
-            // trkYScale value 100 = 100% of auto-calculated maxVel
-            // We'll use it to multiply the base auto-scale or just use it as a divisor
-            double baseMaxVel = Data.Select(d => Math.Abs(d.RadialVelocity)).Max();
-            if (baseMaxVel < 1e-3) baseMaxVel = 1e-3; // Avoid div by zero
-            
             // Map trkYScale (1-1000) to a range (e.g. 0.01 to 10.0 x baseMaxVel)
-            // But user might want absolute control. Let's just make it a multiplier for a "standard" range.
+            double baseMaxVel = Data.Select(d => Math.Abs(d.RadialVelocity)).Max();
+            if (baseMaxVel < 1e-3) 
+            { 
+                baseMaxVel = 1e-3; 
+            }
+                       
             double maxVel = (baseMaxVel * 1.5) * (100.0 / trkYScale.Value); 
 
             float MapX(double t)
@@ -86,7 +86,10 @@ namespace NatureOfCodeTest
             }
 
             // Draw Zero Line
-            Pen zeroPen = new Pen(Color.Gray, 1) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
+            Pen zeroPen = new Pen(Color.Gray, 1) 
+            { 
+                DashStyle = System.Drawing.Drawing2D.DashStyle.Dash 
+            };
             float y0 = MapY(0);
             g.DrawLine(zeroPen, marginLeft, y0, w - marginRight, y0);
 
@@ -95,7 +98,13 @@ namespace NatureOfCodeTest
             {
                 // Find index to start drawing from for performance
                 int startIndex = 0;
-                for (int i = 0; i < Data.Count; i++) { if (Data[i].Time >= minTime) { startIndex = Math.Max(0, i - 1); break; } }
+                for (int i = 0; i < Data.Count; i++) 
+                { 
+                    if (Data[i].Time >= minTime) 
+                    { 
+                        startIndex = Math.Max(0, i - 1); break; 
+                    } 
+                }
 
                 for (int i = startIndex + 1; i < Data.Count; i++)
                 {
