@@ -29,8 +29,6 @@ namespace NatureOfCodeTest.Model
         // Here, the Name would the HostName
         public double Luminosity { get; set; }
         
-        // A Queue is a natural way to store a fixed-length "breadcrumb" or "history" trail.
-        // It follows First-In, First-Out (FIFO) logic.
         public Queue<System.Numerics.Vector2> HistoryQueue { get; private set; } = new Queue<System.Numerics.Vector2>();
         public int MaxHistorySize { get; set; } = 100;
 
@@ -38,7 +36,7 @@ namespace NatureOfCodeTest.Model
         {
             HistoryQueue.Enqueue(Velocity);
             
-            // If we exceed our maximum history, remove the oldest entry.
+            // If we exceed our maximum history, remove the oldest entry. This is for the program to run smoother over long period.
             if (HistoryQueue.Count > MaxHistorySize)
             {
                 HistoryQueue.Dequeue();

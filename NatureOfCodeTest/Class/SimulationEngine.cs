@@ -11,7 +11,7 @@ namespace NatureOfCodeTest.Model
         public Star HostStar { get; set; }
         public Planet OrbitingPlanet { get; set; }
         public double CurrentTime { get; private set; }
-        public double TimeStep { get; set; } = 86400; // 1 ngày (giây)
+        public double TimeStep { get; set; } = 86400; // seconds in a day
 
         private OrbitCalculator _orbitCalc = new OrbitCalculator();
         private RadialVelocityCalculator _rvCalc = new RadialVelocityCalculator();
@@ -32,7 +32,7 @@ namespace NatureOfCodeTest.Model
 
             // Update velocity
             HostStar.Velocity = _orbitCalc.ComputeStarReflexMotion(OrbitingPlanet, HostStar);
-            HostStar.RecordVelocity(); // Recording to the Queue
+            HostStar.RecordVelocity(); // Record to the Queue
 
             Samples.Add(new SimulationSample
             {
