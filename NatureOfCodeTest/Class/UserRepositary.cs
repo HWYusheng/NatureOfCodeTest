@@ -2,6 +2,10 @@ using System;
 using System.Data.OleDb;
 using System.Security.Cryptography;
 using System.Text;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace NatureOfCodeTest
 {
