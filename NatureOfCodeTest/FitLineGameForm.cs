@@ -120,7 +120,7 @@ namespace NatureOfCodeTest
             btnResultBoard.Click += (s, e) => { new FitLineResultBoardForm().ShowDialog(); };
             this.Controls.Add(btnResultBoard);
 
-            // Optional Login / Logout button
+            // Login / Logout button
             btnLogin = new Button
             {
                 Location = new Point(600, 480),
