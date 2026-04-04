@@ -358,8 +358,8 @@ namespace NatureOfCodeTest
                 double timeSec = pt.X * 86400.0;
                 double userPeriodSec = userPeriodDays * 86400.0;
 
-                // Engine initial config uses vx = -sin(E), so the base wave is a negative sine.
-                double userRV = userAmp * -Math.Sin(2 * Math.PI * timeSec / userPeriodSec + userPhaseRad);
+                // Engine initial config uses vx = sin(E), so the base wave is a positive sine.
+                double userRV = userAmp * Math.Sin(2 * Math.PI * timeSec / userPeriodSec + userPhaseRad);
                 
                 double rvDiff = Math.Abs(userRV - pt.Y);
                 totalError += rvDiff;
