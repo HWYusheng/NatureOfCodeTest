@@ -1,8 +1,5 @@
 using System;
-using System.Data.OleDb;
 using System.Drawing;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
 
 namespace NatureOfCodeTest
@@ -19,7 +16,7 @@ namespace NatureOfCodeTest
         private Label lblPassword;
         private Label lblStatus;
 
-        private string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source = " + Environment.CurrentDirectory + @"\StellerWobble.accdb";
+        private UserRepositary userRepo = new UserRepositary();
 
         public LoginForm()
         {
@@ -140,17 +137,7 @@ namespace NatureOfCodeTest
         }
 
 
-        private string HashPassword(string password)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in bytes)
-                    sb.Append(b.ToString("x2"));
-                return sb.ToString();
-            }
-        }
+
 
         private void BtnLogin_Click(object sender, EventArgs e)
         {
@@ -163,36 +150,17 @@ namespace NatureOfCodeTest
                 return;
             }
 
-            string hash = HashPassword(password);
-            string sql = "SELECT UserID, Username FROM Users WHERE Username = ? AND PasswordHash = ?";
-
-            try
+            var result = userRepo.Login(username, password);
+            if (result.success)
             {
-                using (OleDbConnection conn = new OleDbConnection(connectionString))
-                using (OleDbCommand cmd = new OleDbCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("?", username);
-                    cmd.Parameters.AddWithValue("?", hash);
-                    conn.Open();
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            UserSession.CurrentUserID = reader.GetInt32(0);
-                            UserSession.CurrentUsername = reader.GetString(1);
-                            this.DialogResult = DialogResult.OK;
-                            this.Close();
-                        }
-                        else
-                        {
-                            lblStatus.Text = "Invalid username or password.";
-                        }
-                    }
-                }
+                UserSession.CurrentUserID   = result.userID;
+                UserSession.CurrentUsername = result.username;
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
-            catch (Exception ex)
+            else
             {
-                lblStatus.Text = "Login error: " + ex.Message;
+                lblStatus.Text = result.errorMessage;
             }
         }
 
@@ -213,46 +181,17 @@ namespace NatureOfCodeTest
                 return;
             }
 
-            string hash = HashPassword(password);
-            string sql = "INSERT INTO Users (Username, PasswordHash) VALUES (?, ?)";
-
-            try
+            var result = userRepo.Register(username, password);
+            if (result.success)
             {
-                using (OleDbConnection conn = new OleDbConnection(connectionString))
-                using (OleDbCommand cmd = new OleDbCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("?", username);
-                    cmd.Parameters.AddWithValue("?", hash);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-
-                // Auto-login after registration
-                string selectSql = "SELECT UserID FROM Users WHERE Username = ?";
-                using (OleDbConnection conn = new OleDbConnection(connectionString))
-                using (OleDbCommand cmd = new OleDbCommand(selectSql, conn))
-                {
-                    cmd.Parameters.AddWithValue("?", username);
-                    conn.Open();
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            UserSession.CurrentUserID = reader.GetInt32(0);
-                            UserSession.CurrentUsername = username;
-                        }
-                    }
-                }
-
+                UserSession.CurrentUserID   = result.userID;
+                UserSession.CurrentUsername = username;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
-            catch (OleDbException ex)
+            else
             {
-                if (ex.Message.Contains("duplicate") || ex.Message.Contains("unique") || ex.Errors.Count > 0)
-                    lblStatus.Text = "Username already exists.";
-                else
-                    lblStatus.Text = "Register error: " + ex.Message;
+                lblStatus.Text = result.errorMessage;
             }
         }
 
