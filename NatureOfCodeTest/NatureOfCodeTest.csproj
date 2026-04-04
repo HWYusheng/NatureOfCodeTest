@@ -118,6 +118,7 @@
     <Compile Include="Class\SimulationEngine.cs" />
     <Compile Include="Class\SimulationSample.cs" />
     <Compile Include="Class\Program.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Class\ColorUtils.cs" />
     <EmbeddedResource Include="DistanceForm.resx">
