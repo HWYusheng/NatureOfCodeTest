@@ -5,10 +5,7 @@ using System.Text;
 
 namespace NatureOfCodeTest
 {
-    /// <summary>
-    /// Handles all database operations against the Users table.
-    /// Follows the same repository pattern as FitLineResultRepositary and CelesBodyRepositary.
-    /// </summary>
+
     public class UserRepositary
     {
         private string connectionString =
@@ -16,11 +13,8 @@ namespace NatureOfCodeTest
             Environment.CurrentDirectory +
             @"\StellerWobble.accdb";
 
-        // ─── Private Helpers ────────────────────────────────────────────────
 
-        /// <summary>
-        /// Returns a SHA-256 hex string for the given plain-text password.
-        /// </summary>
+        // Returns a SHA-256 hex string for the given plain-text password.
         private string HashPassword(string password)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -33,13 +27,10 @@ namespace NatureOfCodeTest
             }
         }
 
-        // ─── Public Methods ──────────────────────────────────────────────────
 
-        /// <summary>
-        /// Attempts to authenticate a user against the Users table.
-        /// On success, sets UserSession and returns (true, userID, username).
-        /// On failure, returns (false, -1, errorMessage).
-        /// </summary>
+        // Attempts to authenticate a user against the Users table.
+        // If success, sets UserSession and returns (true, userID, username).
+        // If fail, returns (false, -1, errorMessage).
         public (bool success, int userID, string username, string errorMessage) Login(string username, string password)
         {
             string hash = HashPassword(password);
@@ -75,11 +66,9 @@ namespace NatureOfCodeTest
             }
         }
 
-        /// <summary>
-        /// Registers a new user in the Users table, then fetches their generated UserID.
-        /// On success, sets UserSession and returns (true, userID, null).
-        /// On failure, returns (false, -1, errorMessage).
-        /// </summary>
+        // Registers a new user in the Users table, then fetches their generated UserID.
+        // If success, sets UserSession and returns (true, userID, null).
+        // If fail, returns (false, -1, errorMessage).
         public (bool success, int userID, string errorMessage) Register(string username, string password)
         {
             string hash = HashPassword(password);
@@ -87,7 +76,7 @@ namespace NatureOfCodeTest
 
             try
             {
-                // Step 1: Insert the new user
+                // Insert the new user
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 using (OleDbCommand cmd = new OleDbCommand(insertSql, conn))
                 {
@@ -97,7 +86,7 @@ namespace NatureOfCodeTest
                     cmd.ExecuteNonQuery();
                 }
 
-                // Step 2: Fetch the newly generated UserID
+                // Fetch the newly generated UserID
                 string selectSql = "SELECT UserID FROM Users WHERE Username = ?";
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 using (OleDbCommand cmd = new OleDbCommand(selectSql, conn))
@@ -118,7 +107,7 @@ namespace NatureOfCodeTest
             }
             catch (OleDbException ex)
             {
-                // Access raises a generic error for unique-constraint violations
+                // Username already exsists error throws.
                 string msg = (ex.Message.Contains("duplicate") || ex.Message.Contains("unique") || ex.Errors.Count > 0)
                     ? "Username already exists."
                     : "Register error: " + ex.Message;
