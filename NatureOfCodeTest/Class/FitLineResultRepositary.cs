@@ -16,8 +16,8 @@ namespace NatureOfCodeTest
         public int Timestamp { get; set; }
         public string PlanetName { get; set; }
         public string HostStarName { get; set; }
-        public int UserID { get; set; }        // FK → Users.UserID
-        public string Username { get; set; }   // Joined from Users table
+        public int UserID { get; set; }        
+        public string Username { get; set; }   // Fetch from Users table
 
         public DateTime DatePlayed
         {
@@ -50,11 +50,9 @@ namespace NatureOfCodeTest
             }
         }
 
-        /// <summary>
-        /// Returns all results joined with the Users table via Simulations.UserID = Users.UserID.
-        /// Logged-in: all attempts for that UserID across all sessions.
-        /// Guest: only this session's attempts (UserID = -1).
-        /// </summary>
+        // Returns all results joined with the Users table via Simulations.UserID = Users.UserID.
+        // Logged-in: all attempts for that UserID across all sessions.
+        // Guest: only this session's attempts (UserID = -1).
         public List<FitLineResult> GetAllResults()
         {
             List<FitLineResult> results = new List<FitLineResult>();
