@@ -15,11 +15,11 @@ namespace NatureOfCodeTest
         public FitLineResultBoardForm()
         {
             repo = new FitLineResultRepositary();
-            SetupUI();
+            InitializeComponentsRunTime();
             LoadData();
         }
 
-        private void SetupUI()
+        private void InitializeComponentsRunTime()
         {
             this.Text = "Fit Line Result Board";
             this.Size = new Size(750, 520);
@@ -27,7 +27,7 @@ namespace NatureOfCodeTest
             this.BackColor = Color.FromArgb(25, 25, 40);
             this.ForeColor = Color.White;
 
-            // Top banner — shows who is logged in
+            // Top stripe: shows who is logged in
             lblPlayerInfo = new Label
             {
                 Dock = DockStyle.Top,
@@ -89,11 +89,11 @@ namespace NatureOfCodeTest
         {
             var results = repo.GetAllResults();
 
-            // Display: Username from joined Users table, not raw PlayerID number
+            // Display: Username from Users table, not PlayerID number
             var displayData = results.Select(r => new
             {
                 Attempt_ID  = r.SimulationID,
-                Player      = r.Username,                         // joined from Users
+                Player      = r.Username,                         
                 Star_System = r.HostStarName,
                 Planet      = r.PlanetName,
                 Score       = r.FitScore.ToString("F1") + " / 100",
@@ -107,6 +107,21 @@ namespace NatureOfCodeTest
                 $"  Avg Score: {avgs.AvgScore:F1} / 100   |   " +
                 $"Avg Time: {avgs.AvgTime:F1}s   |   " +
                 $"Total Attempts: {results.Count}";
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            this.ClientSize = new System.Drawing.Size(274, 229);
+            this.Name = "FitLineResultBoardForm";
+            this.Load += new System.EventHandler(this.FitLineResultBoardForm_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void FitLineResultBoardForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
