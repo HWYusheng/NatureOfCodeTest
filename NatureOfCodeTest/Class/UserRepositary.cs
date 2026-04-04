@@ -73,6 +73,11 @@ namespace NatureOfCodeTest
         // If fails, returns (false, -1, errorMessage).
         public (bool success, int userID, string errorMessage) Register(string username, string password)
         {
+            if (UserExists(username))
+            {
+                return (false, -1, "Username already exists.");
+            }
+
             string hash = HashPassword(password);
             string insertSql = "INSERT INTO Users (Username, PasswordHash) VALUES (?, ?)";
 
@@ -115,6 +120,27 @@ namespace NatureOfCodeTest
                     : "Register error: " + ex.Message;
 
                 return (false, -1, msg);
+            }
+        }
+
+        // Checks if a username already exists in the Users table.
+        public bool UserExists(string username)
+        {
+            string sql = "SELECT COUNT(*) FROM Users WHERE Username = ?";
+            try
+            {
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                using (OleDbCommand cmd = new OleDbCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("?", username);
+                    conn.Open();
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
     }
