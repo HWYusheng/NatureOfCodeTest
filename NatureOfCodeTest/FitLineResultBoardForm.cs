@@ -27,7 +27,7 @@ namespace NatureOfCodeTest
             this.BackColor = Color.FromArgb(25, 25, 40);
             this.ForeColor = Color.White;
 
-            // Top stripe: shows who is logged in
+            // Top stripe: shows logged in user or guest mode
             lblPlayerInfo = new Label
             {
                 Dock = DockStyle.Top,
@@ -79,7 +79,7 @@ namespace NatureOfCodeTest
             gridResults.ColumnHeadersDefaultCellStyle.Font  = new Font("Arial", 9, FontStyle.Bold);
             gridResults.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(38, 38, 60);
 
-            // Stack: banner at top, then stats bar, then grid
+            // Banner at top, then stats bar, then grid
             this.Controls.Add(gridResults);
             this.Controls.Add(lblAverages);
             this.Controls.Add(lblPlayerInfo);
@@ -89,7 +89,7 @@ namespace NatureOfCodeTest
         {
             var results = repo.GetAllResults();
 
-            // Display: Username from Users table, not PlayerID number
+            // Display username from Users table, ID number
             var displayData = results.Select(r => new
             {
                 Attempt_ID  = r.SimulationID,
