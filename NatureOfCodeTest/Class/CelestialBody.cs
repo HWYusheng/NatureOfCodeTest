@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +28,22 @@ namespace NatureOfCodeTest.Model
     {
         // Here, the Name would the HostName
         public double Luminosity { get; set; }
-        public List<Vector2> VelocityHistory { get; private set; } = new List<Vector2>();
+        
+        // A Queue is a natural way to store a fixed-length "breadcrumb" or "history" trail.
+        // It follows First-In, First-Out (FIFO) logic.
+        public Queue<System.Numerics.Vector2> HistoryQueue { get; private set; } = new Queue<System.Numerics.Vector2>();
+        public int MaxHistorySize { get; set; } = 100;
 
-        public void RecordVelocity() => VelocityHistory.Add(Velocity);
+        public void RecordVelocity() 
+        {
+            HistoryQueue.Enqueue(Velocity);
+            
+            // If we exceed our maximum history, remove the oldest entry.
+            if (HistoryQueue.Count > MaxHistorySize)
+            {
+                HistoryQueue.Dequeue();
+            }
+        }
     }
 
     public class Planet : CelestialBody

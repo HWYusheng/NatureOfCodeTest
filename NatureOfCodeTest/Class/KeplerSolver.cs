@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +10,18 @@ namespace NatureOfCodeTest.Model
     {
         public double SolveEccentricAnomaly(double M, double e)
         {
-            // Newton-Raphson to estimate the root (recursion)
-            double E = M;
-            for (int i = 0; i < 10; i++) 
-            {
-                E = E - (E - e * Math.Sin(E) - M) / (1 - e * Math.Cos(E));
-            }
-            return E;
+            // Instead of an iterative loop, we use recursion for numerical approximation.
+            // Formula: E_new = M + e * sin(E_old)
+            return SolveRecursive(M, e, M, 0);
+        }
+
+        private double SolveRecursive(double M, double e, double E, int depth)
+        {
+            // Base case: Terminate after 10 recursions for stability.
+            if (depth >= 10) return E;
+
+            double nextE = M + e * Math.Sin(E);
+            return SolveRecursive(M, e, nextE, depth + 1);
         }
     }
 }

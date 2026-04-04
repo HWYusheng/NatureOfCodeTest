@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,6 +32,7 @@ namespace NatureOfCodeTest.Model
 
             // Update velocity
             HostStar.Velocity = _orbitCalc.ComputeStarReflexMotion(OrbitingPlanet, HostStar);
+            HostStar.RecordVelocity(); // Recording to the Queue
 
             Samples.Add(new SimulationSample
             {
