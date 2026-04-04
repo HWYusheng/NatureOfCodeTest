@@ -23,11 +23,6 @@ namespace NatureOfCodeTest
 
         public LoginForm()
         {
-            SetupUI();
-        }
-
-        private void SetupUI()
-        {
             this.Text = "FitLine Game - Login";
             this.Size = new Size(400, 360);
             this.StartPosition = FormStartPosition.CenterParent;
@@ -83,7 +78,7 @@ namespace NatureOfCodeTest
                 TextAlign = ContentAlignment.MiddleCenter
             };
             this.Controls.Add(lblStatus);
-            
+
             // Buttons
             btnLogin = new Button
             {
@@ -138,6 +133,7 @@ namespace NatureOfCodeTest
             };
             this.Controls.Add(lblGuestNote);
         }
+
 
         private string HashPassword(string password)
         {
@@ -271,6 +267,30 @@ namespace NatureOfCodeTest
 
 
         private void LoginForm_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void LoginForm_Load_2(object sender, EventArgs e)
+        {
+
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // LoginForm
+            // 
+            this.ClientSize = new System.Drawing.Size(274, 229);
+            this.Name = "LoginForm";
+            this.Load += new System.EventHandler(this.LoginForm_Load_3);
+            this.ResumeLayout(false);
+
+        }
+
+        private void LoginForm_Load_3(object sender, EventArgs e)
         {
 
         }
