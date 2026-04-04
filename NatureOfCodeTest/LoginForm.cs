@@ -23,6 +23,11 @@ namespace NatureOfCodeTest
 
         public LoginForm()
         {
+            InitializeComponentsRunTime();
+        }
+
+        private void InitializeComponentsRunTime()
+        {
             this.Text = "FitLine Game - Login";
             this.Size = new Size(400, 360);
             this.StartPosition = FormStartPosition.CenterParent;

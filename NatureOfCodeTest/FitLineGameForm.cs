@@ -482,6 +482,22 @@ namespace NatureOfCodeTest
 
         }
 
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // FitLineGameForm
+            // 
+            this.ClientSize = new System.Drawing.Size(274, 229);
+            this.Name = "FitLineGameForm";
+            this.Load += new System.EventHandler(this.FitLineGameForm_Load_1);
+            this.ResumeLayout(false);
 
+        }
+
+        private void FitLineGameForm_Load_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
