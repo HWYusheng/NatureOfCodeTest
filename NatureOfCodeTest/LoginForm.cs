@@ -1,6 +1,14 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
+using NatureOfCodeTest.Model;
 
 namespace NatureOfCodeTest
 {
@@ -136,9 +144,6 @@ namespace NatureOfCodeTest
             this.Controls.Add(lblGuestNote);
         }
 
-
-
-
         private void BtnLogin_Click(object sender, EventArgs e)
         {
             string username = txtUsername.Text.Trim();
@@ -217,12 +222,12 @@ namespace NatureOfCodeTest
             // 
             this.ClientSize = new System.Drawing.Size(274, 229);
             this.Name = "LoginForm";
-            this.Load += new System.EventHandler(this.LoginForm_Load_3);
+            this.Load += new System.EventHandler(this.LoginForm_Load_1);
             this.ResumeLayout(false);
 
         }
 
-        private void LoginForm_Load_3(object sender, EventArgs e)
+        private void LoginForm_Load_1(object sender, EventArgs e)
         {
 
         }
