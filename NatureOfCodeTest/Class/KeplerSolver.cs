@@ -10,8 +10,8 @@ namespace NatureOfCodeTest.Model
     {
         public double SolveEccentricAnomaly(double M, double e)
         {
-            // Instead of an iterative loop, we use recursion for numerical approximation.
-            // Formula: E_new = M + e * sin(E_old)
+            // Use recursion for numerical approximation of orbit.
+            // Formula of Recursive Successive Substitution: E_new = M + e * sin(E_old)
             return SolveRecursive(M, e, M, 0);
         }
 
